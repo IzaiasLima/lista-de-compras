@@ -1,17 +1,14 @@
 # Criar a estrutura inicial do banco de dados em SQLite3.
 
-# import sqlite3
 import connection
 
 
 print(f"Script {__name__} executado.")
 
 
-def tbl_create():
-    """Criar as tabelas"""
+def drop_tables():
+    """Excluir as tabelas"""
 
-    # con = sqlite3.connect("compras.db")
-    # cur = con.cursor()
     con, cur = connection.get()
 
     try:
@@ -20,10 +17,19 @@ def tbl_create():
     except:
         pass
 
+    con.commit()
+    con.close()
+
+
+def tbl_create():
+    """Criar as tabelas"""
+
+    con, cur = connection.get()
+
     cur.execute(
         """
             CREATE TABLE IF NOT EXISTS itens
-            (   id integer PRIMARY KEY AUTOINCREMENT,
+            (   id SERIAL NOT NULL PRIMARY KEY,
                 nome text,
                 categoria text,
                 status text,
@@ -35,7 +41,7 @@ def tbl_create():
     cur.execute(
         """
             CREATE TABLE IF NOT EXISTS users
-            (   id integer PRIMARY KEY AUTOINCREMENT,
+            (   id SERIAL NOT NULL PRIMARY KEY,
                 email text,
                 passwd text
             )
@@ -51,8 +57,6 @@ def tbl_create():
 def tables_init():
     """Incluir dados iniciais de teste nas tabelas."""
 
-    # con = sqlite3.connect("compras.db")
-    # cur = con.cursor()
     con, cur = connection.get()
 
     itens = [
@@ -75,8 +79,8 @@ def tables_init():
     cur.execute("DELETE FROM users")
 
     if connection.DB_TYPE == "psql":
-        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%S,%S,%S,%S)", itens)
-        cur.executemany("INSERT INTO users VALUES (%S,%S,%S)", users)
+        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
+        cur.executemany("INSERT INTO users VALUES (%s,%s,%s)", users)
     else:
         cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
         cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
@@ -88,5 +92,6 @@ def tables_init():
 
 
 if __name__ == "__main__":
+    drop_tables()
     tbl_create()
     tables_init()
