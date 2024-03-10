@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/app/favicon.png">
+    <title>Lista de Compras - Login</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="login">
+
+            <div class="icon"> <i class="fa fa-user-md"></i> </div>
+
+            <input type="text" name="user" placeholder="Login do médico">
+            <input type="password" name="passwd" placeholder="Senha">
+
+            <a class="button" hx-post="/login" hx-include="#login">Entrar</a>
+
+            <div class="buttons">
+                <button class="mini secondary">Esqueci a senha</button>
+                <button class="mini secondary">Cadastrar</button>
+            </div>
+        </div>
+
+        <div id="toast" class="animate__animated animate__faster">
+            <!-- Exibir mensagem de erro -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+        crossorigin="anonymous"></script>
+    <script src="./js/functions.js"></script>
+
+</body>
+
+</html>

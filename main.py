@@ -1,17 +1,13 @@
-#! env/bin/python
-# -*- coding: UTF-8 -*-
-
 from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
 
 import json
-import time
 import urllib.parse as html
-import uvicorn
 
 import db
 import db_init
+import user
 
 import static.fragments.html_add as add
 
@@ -34,30 +30,51 @@ async def get_body(req: Request):
     try:
         body = json.loads(payload)
     except:
-        lista = list(payload.split("&"))
-        body = dict(l.split("=") for l in lista)
-
+        try:
+            lista = list(payload.split("&"))
+            body = dict(l.split("=") for l in lista)
+        except:
+            body = {}
     return body
 
 
 @app.get("/", response_class=RedirectResponse)
 async def root():
-    return "/app/home.html"
+    return "/app/login.html"
 
 
 @app.get("/api", response_class=RedirectResponse)
 async def root():
-    return "/app/home.html"
+    return "/app/login.html"
+
+
+@app.post("/login", response_class=HTMLResponse)
+async def login(body: dict = Depends(get_body)):
+    user.login(body.get("user"), body.get("passwd"))
+
+    if user.logged():
+        URL = "<script>window.location.href='/app/home.html'</script>"
+        return URL
+    else:
+        raise HTTPException(status_code=401, detail="Usuário ou senha inválidos.")
+
+
+@app.get("/logout", response_class=HTMLResponse)
+async def logout():
+    user.logout()
+    URL = "<script>window.location.href='/app/login.html'</script>"
+    return URL
 
 
 @app.get("/api/capitulo", response_class=JSONResponse)
-async def root():
-    return {"capitulo": sort_chapter()}
+@user.authenticated
+async def salmos():
+    res = {"capitulo": sort_chapter()}
+    return res
 
 
 @app.get("/api/itens")
 async def itens():
-    # time.sleep(0.5)
     dados = db.get_itens()
     return JSONResponse(dados)
 
@@ -170,7 +187,3 @@ def sort_chapter():
 
     chapter = [1, 2, 14, 15, 23, 24, 91, 100, 133, 150][r.randint(0, 9)]
     return chapter
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

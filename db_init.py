@@ -14,6 +14,7 @@ def tbl_create():
 
     try:
         cur.execute("DROP TABLE itens")
+        cur.execute("DROP TABLE users")
     except:
         pass
 
@@ -24,6 +25,17 @@ def tbl_create():
                 nome text,
                 categoria text,
                 status text
+                user integer
+            )
+        """
+    )
+
+    cur.execute(
+        """
+            CREATE TABLE IF NOT EXISTS users
+            (   id integer PRIMARY KEY AUTOINCREMENT,
+                user text,
+                passwd text
             )
         """
     )
@@ -54,9 +66,15 @@ def tables_init():
         (None, "Sabão em pó", "produtos de limpeza", "selecionado"),
     ]
 
+    users = [
+        (None, "admin@admin.com", "admin"),
+    ]
+
     cur.execute("DELETE FROM itens")
+    cur.execute("DELETE FROM users")
 
     cur.executemany("INSERT INTO itens VALUES (?,?,?,?)", itens)
+    cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
 
     con.commit()
     con.close()
