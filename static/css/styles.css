@@ -256,9 +256,9 @@ button.swal2-cancel {
 }
 
 ::placeholder {
-    color: var(--font-primary);
+    color: rgba(0, 0, 0, 0.5);
     font-weight: 100;
-    opacity: 0.5;
+    /* opacity: 0.5; */
 }
 
 input {
@@ -279,6 +279,11 @@ select {
     line-height: 2.5em;
     background: #fff;
     border-radius: var(--border-radius);
+}
+
+select:invalid {
+    color: rgba(0, 0, 0, 0.5);
+    font-weight: 100;
 }
 
 div.icon {

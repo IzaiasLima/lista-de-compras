@@ -74,18 +74,21 @@ async def salmos():
 
 
 @app.get("/api/itens")
+@user.authenticated
 async def itens():
     dados = db.get_itens()
     return JSONResponse(dados)
 
 
 @app.get("/api/itens/{id}")
+@user.authenticated
 async def item(id: int):
     dados = db.get_item(id)
     return JSONResponse(dados)
 
 
 @app.post("/api/itens", response_class=JSONResponse)
+@user.authenticated
 async def add_item(body=Depends(get_body)):
     if is_valid(body, 3):
         db.add_item(body)
@@ -96,12 +99,14 @@ async def add_item(body=Depends(get_body)):
 
 
 @app.get("/api/compras")
+@user.authenticated
 async def get_compras():
     dados = db.get_compras()
     return JSONResponse(dados)
 
 
 @app.patch("/api/compras/{id}/adicionar", response_class=JSONResponse)
+@user.authenticated
 async def item_select(id: int):
     db.patch_status(id, "comprado")
     dados = db.get_compras()
@@ -109,6 +114,7 @@ async def item_select(id: int):
 
 
 @app.patch("/api/compras/{id}/remover", response_class=JSONResponse)
+@user.authenticated
 async def item_select(id: int):
     db.patch_status(id, "selecionado")
     dados = db.get_compras()
@@ -116,18 +122,21 @@ async def item_select(id: int):
 
 
 @app.get("/api/lista")
+@user.authenticated
 async def get_lista():
     dados = db.get_lista()
     return JSONResponse(dados)
 
 
 @app.get("/api/lista/all/reset", response_class=RedirectResponse)
+@user.authenticated
 async def list_reset():
     db.patch_status(None, "cadastrado")
     return "/app/lista.html"
 
 
 @app.patch("/api/lista/{id}/adicionar", response_class=JSONResponse)
+@user.authenticated
 async def item_select(id: int):
     db.patch_status(id, "selecionado")
     dados = db.get_lista()
@@ -135,6 +144,7 @@ async def item_select(id: int):
 
 
 @app.patch("/api/lista/{id}/remover", response_class=JSONResponse)
+@user.authenticated
 async def item_remove(id: int):
     db.patch_status(id, "cadastrado")
     dados = db.get_lista()
@@ -142,6 +152,7 @@ async def item_remove(id: int):
 
 
 @app.delete("/api/itens/{id}", response_class=HTMLResponse)
+@user.authenticated
 async def del_item(id: int):
     db.del_item(id)
     return ""
@@ -152,6 +163,7 @@ async def del_item(id: int):
 
 # retornar template para incluir item
 @app.get("/api/itens/new/add", response_class=HTMLResponse)
+@user.authenticated
 async def add_item():
     return add.item_html()
 
@@ -173,7 +185,8 @@ async def add_item():
 
 # resetar o banco de dados
 @app.get("/reset", response_class=RedirectResponse)
-def db_reset():
+@user.admin
+async def db_reset():
     db_init.tables_init()
     return "/app/home.html"
 

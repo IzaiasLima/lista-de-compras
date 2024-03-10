@@ -3,6 +3,10 @@ from starlette.exceptions import HTTPException
 import db_user as db
 
 IS_AUTH: bool = False
+IS_ADMIN: bool = False
+
+ADMIN_EMAIL = "admin@admin.com"
+
 CURRENT_USER_ID = None
 
 
@@ -24,19 +28,25 @@ def is_valid_pwd(email: str, pwd: str):
 
 def login(email, pwd):
     global IS_AUTH
+    global IS_ADMIN
+
+    IS_AUTH = False
+    IS_ADMIN = False
 
     if user_exists(email):
         IS_AUTH = is_valid_pwd(email, pwd)
+        IS_ADMIN = IS_AUTH and email == ADMIN_EMAIL
     elif email and pwd:
         add_user(email, pwd)
         IS_AUTH = True
-    else:
-        IS_AUTH = False
 
 
 def logout():
     global IS_AUTH
+    global IS_ADMIN
+
     IS_AUTH = False
+    IS_ADMIN = False
 
 
 def add_user(email, pwd):
@@ -50,10 +60,22 @@ def authenticated(func):
     from functools import wraps
 
     @wraps(func)
-    async def wrapper():
+    async def wrapper(*args, **kwargs):
         if not IS_AUTH:
             raise NotAuthorized(status_code=401, detail="Usuário não autenticado.")
-        return await func()
+        return await func(*args, **kwargs)
+
+    return wrapper
+
+
+def admin(func):
+    from functools import wraps
+
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        if not IS_ADMIN:
+            raise NotAuthorized(status_code=403, detail="Usuário sem permissão.")
+        return await func(*args, **kwargs)
 
     return wrapper
 

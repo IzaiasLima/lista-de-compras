@@ -53,27 +53,25 @@ def tables_init():
     cur = con.cursor()
 
     itens = [
-        (None, "Banana", "hortifrutigranjeiros", "cadastrado", 1),
-        (None, "Ovos", "hortifrutigranjeiros", "selecionado", 1),
-        (None, "Leite", "laticínios", "comprado", 1),
-        (None, "Carne", "carnes e peixes", "comprado", 1),
-        (None, "Iogurte", "laticínios", "comprado", 1),
-        (None, "Queijo", "frios", "comprado", 1),
-        (None, "Suco", "sucos e bebidas", "comprado", 1),
-        (None, "Amaciante", "produtos de limpeza", "comprado", 1),
-        (None, "Açúcar mascavo", "produtos básicos", "comprado", 1),
-        (None, "Laranja", "hortifrutigranjeiros", "selecionado", 1),
-        (None, "Sabão em pó", "produtos de limpeza", "selecionado", 1),
+        ("Carne", "carnes e peixes", "cadastrado", 1),
+        ("Sardinha", "enlatados", "cadastrado", 1),
+        ("Banana", "frutas e verduras", "cadastrado", 1),
+        ("Queijo", "frios", "cadastrado", 1),
+        ("Leite", "laticínios", "cadastrado", 1),
+        ("Açúcar", "produtos básicos", "cadastrado", 1),
+        ("Ovos", "produtos da granja", "cadastrado", 1),
+        ("Sabão em pó", "produtos de limpeza", "cadastrado", 1),
+        ("Suco", "sucos e bebidas", "cadastrado", 1),
     ]
 
     users = [
-        (None, "admin@admin.com", "admin"),
+        (1, "admin@admin.com", "admin"),
     ]
 
     cur.execute("DELETE FROM itens")
     cur.execute("DELETE FROM users")
 
-    cur.executemany("INSERT INTO itens VALUES (?,?,?,?,?)", itens)
+    cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
     cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
 
     con.commit()
