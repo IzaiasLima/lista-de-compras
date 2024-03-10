@@ -1,6 +1,7 @@
 # Criar a estrutura inicial do banco de dados em SQLite3.
 
-import sqlite3
+# import sqlite3
+import connection
 
 
 print(f"Script {__name__} executado.")
@@ -9,8 +10,9 @@ print(f"Script {__name__} executado.")
 def tbl_create():
     """Criar as tabelas"""
 
-    con = sqlite3.connect("compras.db")
-    cur = con.cursor()
+    # con = sqlite3.connect("compras.db")
+    # cur = con.cursor()
+    con, cur = connection.get()
 
     try:
         cur.execute("DROP TABLE itens")
@@ -49,8 +51,9 @@ def tbl_create():
 def tables_init():
     """Incluir dados iniciais de teste nas tabelas."""
 
-    con = sqlite3.connect("compras.db")
-    cur = con.cursor()
+    # con = sqlite3.connect("compras.db")
+    # cur = con.cursor()
+    con, cur = connection.get()
 
     itens = [
         ("Carne", "carnes e peixes", "cadastrado", 1),
@@ -71,8 +74,12 @@ def tables_init():
     cur.execute("DELETE FROM itens")
     cur.execute("DELETE FROM users")
 
-    cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
-    cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
+    if connection.DB_TYPE == "psql":
+        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%S,%S,%S,%S)", itens)
+        cur.executemany("INSERT INTO users VALUES (%S,%S,%S)", users)
+    else:
+        cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
+        cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
 
     con.commit()
     con.close()

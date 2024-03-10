@@ -1,9 +1,12 @@
-import sqlite3 as s
+# import sqlite3 as s
+import connection
 import user
 
-con = s.connect("compras.db")
-con.row_factory = s.Row
-cur = con.cursor()
+# con = s.connect("compras.db")
+# con.row_factory = s.Row
+# cur = con.cursor()
+
+con, cur = connection.get()
 
 
 def get_itens():

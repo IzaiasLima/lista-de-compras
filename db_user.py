@@ -1,12 +1,21 @@
-import sqlite3 as s
+# import sqlite3 as s
+import connection
 
-con = s.connect("compras.db")
-con.row_factory = s.Row
-cur = con.cursor()
+# con = s.connect("compras.db")
+# con.row_factory = s.Row
+# cur = con.cursor()
+
+con, cur = connection.get()
 
 
 def add(email, pwd):
-    sql = f"INSERT INTO users VALUES (NULL, '{email}', '{pwd}')"
+    sql = "INSERT INTO users"
+
+    if connection.DB_TYPE == connection.TYPE_PSQL:
+        sql += f" VALUES (DEFAULT, '{email}', '{pwd}')"
+    else:
+        sql += f" VALUES (NULL, '{email}', '{pwd}')"
+
     cur.execute(sql)
     con.commit()
 
