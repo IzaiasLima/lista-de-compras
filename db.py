@@ -53,7 +53,8 @@ def get_dados(tbl, id=None):
     sql += f" WHERE user_id={user.CURRENT_USER_ID}"
     sql += f" AND id={id}" if id else ""
     sql += " ORDER BY 3,2;"
-    rows = cur.execute(sql).fetchall()
+    cur.execute(sql)
+    rows = cur.fetchall()
     dados = [dict(row) for row in rows]
     return dados
 
@@ -63,7 +64,8 @@ def get_filtrado(tbl, filtro=None):
     sql += f" WHERE user_id={user.CURRENT_USER_ID}"
     sql += f" AND status='{filtro}'" if filtro else ""
     sql += " ORDER BY 3,2;"
-    rows = cur.execute(sql).fetchall()
+    cur.execute(sql)
+    rows = cur.fetchall()
     dados = [dict(row) for row in rows]
     return dados
 
