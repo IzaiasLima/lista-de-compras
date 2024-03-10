@@ -1,4 +1,5 @@
 import sqlite3 as s
+import user
 
 con = s.connect("compras.db")
 con.row_factory = s.Row
@@ -17,9 +18,9 @@ def add_item(new_item):
     add("itens", new_item)
 
 
-def update_item(id, updated):
-    item = get_item(id)
-    update(id, "itens", item, updated)
+# def update_item(id, updated):
+#     item = get_item(id)
+#     update(id, "itens", item, updated)
 
 
 def del_item(id):
@@ -46,7 +47,8 @@ def get_compras():
 
 def get_dados(tbl, id=None):
     sql = f"SELECT * FROM {tbl}"
-    sql += f" WHERE id={id}" if id else ""
+    sql += f" WHERE user_id={user.CURRENT_USER_ID}"
+    sql += f" AND id={id}" if id else ""
     sql += " ORDER BY 3,2;"
     rows = cur.execute(sql).fetchall()
     dados = [dict(row) for row in rows]
@@ -55,7 +57,8 @@ def get_dados(tbl, id=None):
 
 def get_filtrado(tbl, filtro=None):
     sql = f"SELECT * FROM {tbl}"
-    sql += f" WHERE status='{filtro}'" if filtro else ""
+    sql += f" WHERE user_id={user.CURRENT_USER_ID}"
+    sql += f" AND status='{filtro}'" if filtro else ""
     sql += " ORDER BY 3,2;"
     rows = cur.execute(sql).fetchall()
     dados = [dict(row) for row in rows]
@@ -63,33 +66,38 @@ def get_filtrado(tbl, filtro=None):
 
 
 def add(table, dados: dict):
+    import user
+
     if dados:
         values = [f"'{v}'" for _, v in dados.items()]
         all_values = ",".join(values)
 
-        sql = f"INSERT INTO {table} values (NULL, {all_values})"
+        sql = f"INSERT INTO {table} values (NULL, {all_values}, {user.CURRENT_USER_ID})"
         cur.execute(sql)
         con.commit()
 
 
 def patch_status(id, status):
     sql = f"UPDATE itens SET status='{status}'"
-    sql += f" WHERE id={id}" if id else ""
+    sql += f" WHERE user_id={user.CURRENT_USER_ID}"
+    sql += f" AND id={id}" if id else ""
     cur.execute(sql)
     con.commit()
 
 
-def update(id, table, outdated: dict, updated: dict):
-    if outdated:
-        dados = outdated[0]
-        dados.update(updated)
+# def update(id, table, outdated: dict, updated: dict):
+#     if outdated:
+#         dados = outdated[0]
+#         dados.update(updated)
 
-        fields = [f"{k}='{v}'" for k, v in dados.items()]
-        all_fields = ",".join(fields)
+#         fields = [f"{k}='{v}'" for k, v in dados.items()]
+#         all_fields = ",".join(fields)
 
-        sql = f"UPDATE {table} SET {all_fields} WHERE id={id}"
-        cur.execute(sql)
-        con.commit()
+#         sql = f"UPDATE {table} SET {all_fields}"
+#         sql += f" WHERE user_id={user.CURRENT_USER_ID}"
+#         sql += f" AND id={id}"
+#         cur.execute(sql)
+#         con.commit()
 
 
 def delete(tbl, id):

@@ -1,30 +1,31 @@
 import sqlite3 as s
 
 con = s.connect("compras.db")
-# con.row_factory = s.Row
+con.row_factory = s.Row
 cur = con.cursor()
 
 
-def add(user, pwd):
-    sql = f"INSERT INTO users VALUES (NULL, '{user}', '{pwd}')"
+def add(email, pwd):
+    sql = f"INSERT INTO users VALUES (NULL, '{email}', '{pwd}')"
     cur.execute(sql)
     con.commit()
 
 
-def get(user):
-    sql = f"SELECT * FROM users WHERE user = '{user}'"
+def get_user(email):
+    sql = f"SELECT * FROM users WHERE email = '{email}'"
     cur.execute(sql)
-    user = cur.fetchone()
+    resp = cur.fetchone()
+    user = dict(resp) if resp else {}
     return user
 
 
 def usr_exists(user):
-    usr = get(user)
+    usr = get_user(user)
     return True if usr else False
 
 
-def is_valid_pwd(user, pwd):
-    sql = f"SELECT * FROM users WHERE user = '{user}' AND passwd = '{pwd}'"
+def is_valid_pwd(email, pwd):
+    sql = f"SELECT * FROM users WHERE email = '{email}' AND passwd = '{pwd}'"
     cur.execute(sql)
     user = cur.fetchone()
     return True if user else False

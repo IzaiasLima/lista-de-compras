@@ -24,8 +24,8 @@ def tbl_create():
             (   id integer PRIMARY KEY AUTOINCREMENT,
                 nome text,
                 categoria text,
-                status text
-                user integer
+                status text,
+                user_id integer
             )
         """
     )
@@ -34,7 +34,7 @@ def tbl_create():
         """
             CREATE TABLE IF NOT EXISTS users
             (   id integer PRIMARY KEY AUTOINCREMENT,
-                user text,
+                email text,
                 passwd text
             )
         """
@@ -53,17 +53,17 @@ def tables_init():
     cur = con.cursor()
 
     itens = [
-        (None, "Banana", "hortifrutigranjeiros", "cadastrado"),
-        (None, "Ovos", "hortifrutigranjeiros", "selecionado"),
-        (None, "Leite", "laticínios", "comprado"),
-        (None, "Carne", "carnes e peixes", "comprado"),
-        (None, "Iogurte", "laticínios", "comprado"),
-        (None, "Queijo", "frios", "comprado"),
-        (None, "Suco", "sucos e bebidas", "comprado"),
-        (None, "Amaciante", "produtos de limpeza", "comprado"),
-        (None, "Açúcar mascavo", "produtos básicos", "comprado"),
-        (None, "Laranja", "hortifrutigranjeiros", "selecionado"),
-        (None, "Sabão em pó", "produtos de limpeza", "selecionado"),
+        (None, "Banana", "hortifrutigranjeiros", "cadastrado", 1),
+        (None, "Ovos", "hortifrutigranjeiros", "selecionado", 1),
+        (None, "Leite", "laticínios", "comprado", 1),
+        (None, "Carne", "carnes e peixes", "comprado", 1),
+        (None, "Iogurte", "laticínios", "comprado", 1),
+        (None, "Queijo", "frios", "comprado", 1),
+        (None, "Suco", "sucos e bebidas", "comprado", 1),
+        (None, "Amaciante", "produtos de limpeza", "comprado", 1),
+        (None, "Açúcar mascavo", "produtos básicos", "comprado", 1),
+        (None, "Laranja", "hortifrutigranjeiros", "selecionado", 1),
+        (None, "Sabão em pó", "produtos de limpeza", "selecionado", 1),
     ]
 
     users = [
@@ -73,7 +73,7 @@ def tables_init():
     cur.execute("DELETE FROM itens")
     cur.execute("DELETE FROM users")
 
-    cur.executemany("INSERT INTO itens VALUES (?,?,?,?)", itens)
+    cur.executemany("INSERT INTO itens VALUES (?,?,?,?,?)", itens)
     cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
 
     con.commit()

@@ -3,28 +3,32 @@ from starlette.exceptions import HTTPException
 import db_user as db
 
 IS_AUTH: bool = False
+CURRENT_USER_ID = None
 
 
 def logged():
-    # global IS_AUTH
     return IS_AUTH
 
 
-def user_exists(user):
-    return db.usr_exists(user)
+def user_exists(email):
+    global CURRENT_USER_ID
+
+    user = db.get_user(email)
+    CURRENT_USER_ID = user.get("id") if user else 0
+    return CURRENT_USER_ID > 0
 
 
-def is_valid_pwd(user: str, pwd: str):
-    return db.is_valid_pwd(user, pwd)
+def is_valid_pwd(email: str, pwd: str):
+    return db.is_valid_pwd(email, pwd)
 
 
-def login(user, pwd):
+def login(email, pwd):
     global IS_AUTH
 
-    if user_exists(user):
-        IS_AUTH = is_valid_pwd(user, pwd)
-    elif user and pwd:
-        add_user(user, pwd)
+    if user_exists(email):
+        IS_AUTH = is_valid_pwd(email, pwd)
+    elif email and pwd:
+        add_user(email, pwd)
         IS_AUTH = True
     else:
         IS_AUTH = False
@@ -35,9 +39,11 @@ def logout():
     IS_AUTH = False
 
 
-def add_user(user, pwd):
-
-    db.add(user, pwd)
+def add_user(email, pwd):
+    global CURRENT_USER_ID
+    db.add(email, pwd)
+    user = db.get_user(email)
+    CURRENT_USER_ID = user.get("id")
 
 
 def authenticated(func):
@@ -45,8 +51,6 @@ def authenticated(func):
 
     @wraps(func)
     async def wrapper():
-        # global IS_AUTH
-
         if not IS_AUTH:
             raise NotAuthorized(status_code=401, detail="Usuário não autenticado.")
         return await func()
