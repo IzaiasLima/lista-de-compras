@@ -48,7 +48,7 @@ async def root():
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(body: dict = Depends(get_body)):
-    user.login(body.get("user"), body.get("passwd"))
+    await user.login(body.get("user"), body.get("passwd"))
 
     if user.logged():
         URL = "<script>window.location.href='/app/home.html'</script>"

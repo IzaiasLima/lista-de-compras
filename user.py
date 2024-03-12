@@ -26,7 +26,7 @@ def is_valid_pwd(email: str, pwd: str):
     return db.is_valid_pwd(email, pwd)
 
 
-def login(email, pwd):
+async def login(email, pwd):
     global IS_AUTH
     global IS_ADMIN
 
@@ -37,7 +37,7 @@ def login(email, pwd):
         IS_AUTH = is_valid_pwd(email, pwd)
         IS_ADMIN = IS_AUTH and email == ADMIN_EMAIL
     elif email and pwd:
-        add_user(email, pwd)
+        await add_user(email, pwd)
         IS_AUTH = True
 
 
@@ -49,10 +49,10 @@ def logout():
     IS_ADMIN = False
 
 
-def add_user(email, pwd):
+async def add_user(email, pwd):
     global CURRENT_USER_ID
-    db.add(email, pwd)
-    user = db.get_user(email)
+    await db.add(email, pwd)
+    user = await db.get_user(email)
     CURRENT_USER_ID = user.get("id")
 
 

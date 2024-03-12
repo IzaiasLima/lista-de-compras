@@ -3,7 +3,7 @@ import connection
 con, cur = connection.get()
 
 
-def add(email, pwd):
+async def add(email, pwd):
     sql = "INSERT INTO users"
 
     if connection.DB_TYPE == connection.TYPE_PSQL:
@@ -15,7 +15,7 @@ def add(email, pwd):
     con.commit()
 
 
-def get_user(email):
+async def get_user(email):
     sql = f"SELECT * FROM users WHERE email = '{email}'"
     cur.execute(sql)
     resp = cur.fetchone()
