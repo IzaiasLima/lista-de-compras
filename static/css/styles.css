@@ -47,6 +47,7 @@ body {
     justify-content: space-between;
     width: 100vw;
     padding: 15px;
+    padding-right: 30px;
     background: var(--bg-menu);
     border-radius: 16px;
     backdrop-filter: blur(7px);

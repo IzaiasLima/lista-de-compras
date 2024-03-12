@@ -1,26 +1,26 @@
 import sqlite3
+import os
 
 import psycopg2
 import psycopg2.extras
 
 
-TYPE_PSQL = "psql"
 TYPE_SQLITE = "sqlite"
 TYPE_MYSQL = "msql"
+TYPE_PSQL = "psql"
 
 DB_TYPE = TYPE_PSQL
+
+
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL", "postgres://postgres:postgres@192.168.1.12/postgres"
+)
 
 
 def get():
     ## FIX: Resolver com Strategy, futuramente
     if DB_TYPE == TYPE_PSQL:
-        con = psycopg2.connect(
-            database="postgres",
-            user="postgres",
-            password="postgres",
-            host="192.168.1.12",
-            port="5432",
-        )
+        con = psycopg2.connect(DATABASE_URL)
         cur = con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         return con, cur
 

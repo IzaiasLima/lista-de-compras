@@ -1,9 +1,4 @@
-# import sqlite3 as s
 import connection
-
-# con = s.connect("compras.db")
-# con.row_factory = s.Row
-# cur = con.cursor()
 
 con, cur = connection.get()
 

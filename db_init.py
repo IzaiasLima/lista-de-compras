@@ -1,7 +1,10 @@
 # Criar a estrutura inicial do banco de dados em SQLite3.
 
+import os
 import connection
 
+ADMIN_USR = os.environ.get("ADMIN_USR", "admin@admin.com")
+ADMIN_PWD = os.environ.get("ADMIN_PWD", "admin")
 
 print(f"Script {__name__} executado.")
 
@@ -72,13 +75,13 @@ def tables_init():
     ]
 
     users = [
-        (1, "admin@admin.com", "admin"),
+        (1, f"{ADMIN_USR}", f"{ADMIN_PWD}"),
     ]
 
     cur.execute("DELETE FROM itens")
     cur.execute("DELETE FROM users")
 
-    if connection.DB_TYPE == "psql":
+    if connection.DB_TYPE == connection.TYPE_PSQL:
         cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
         cur.executemany("INSERT INTO users VALUES (%s,%s,%s)", users)
     else:
@@ -91,7 +94,11 @@ def tables_init():
     print("Dados iniciais incluídos nas tabelas.")
 
 
-if __name__ == "__main__":
+def db_reset():
     drop_tables()
     tbl_create()
     tables_init()
+
+
+if __name__ == "__main__":
+    db_reset()

@@ -1,10 +1,6 @@
-# import sqlite3 as s
 import connection
 import user
 
-# con = s.connect("compras.db")
-# con.row_factory = s.Row
-# cur = con.cursor()
 
 con, cur = connection.get()
 
@@ -19,11 +15,6 @@ def get_item(id):
 
 def add_item(new_item):
     add("itens", new_item)
-
-
-# def update_item(id, updated):
-#     item = get_item(id)
-#     update(id, "itens", item, updated)
 
 
 def del_item(id):
@@ -77,7 +68,13 @@ def add(table, dados: dict):
         values = [f"'{v}'" for _, v in dados.items()]
         all_values = ",".join(values)
 
-        sql = f"INSERT INTO {table} values (NULL, {all_values}, {user.CURRENT_USER_ID})"
+        sql = f"INSERT INTO {table}"
+
+        if connection.DB_TYPE == connection.TYPE_PSQL:
+            sql += f" VALUES (DEFAULT, {all_values}, {user.CURRENT_USER_ID})"
+        else:
+            sql += f" VALUES (NULL, {all_values}, {user.CURRENT_USER_ID})"
+
         cur.execute(sql)
         con.commit()
 
@@ -88,21 +85,6 @@ def patch_status(id, status):
     sql += f" AND id={id}" if id else ""
     cur.execute(sql)
     con.commit()
-
-
-# def update(id, table, outdated: dict, updated: dict):
-#     if outdated:
-#         dados = outdated[0]
-#         dados.update(updated)
-
-#         fields = [f"{k}='{v}'" for k, v in dados.items()]
-#         all_fields = ",".join(fields)
-
-#         sql = f"UPDATE {table} SET {all_fields}"
-#         sql += f" WHERE user_id={user.CURRENT_USER_ID}"
-#         sql += f" AND id={id}"
-#         cur.execute(sql)
-#         con.commit()
 
 
 def delete(tbl, id):

@@ -6,9 +6,7 @@ import json
 import urllib.parse as html
 
 import db
-import db_init
 import user
-
 import static.fragments.html_add as add
 
 ERR_MSG = "Todos os campos precisam ser preenchidos!"
@@ -168,27 +166,7 @@ async def add_item():
     return add.item_html()
 
 
-# retornar template para editar item
-# @app.get("/api/itens/{id}/edit", response_class=HTMLResponse)
-# async def edit_item(id: int):
-#     item = db.get_item(id)
-
-#     if item:
-#         dados = item[0]
-#         return edit.item_html(dados)
-#     else:
-#         raise HTTPException(status_code=404)
-
-
 # --------------------------------------- #
-
-
-# resetar o banco de dados
-@app.get("/reset", response_class=RedirectResponse)
-@user.admin
-async def db_reset():
-    db_init.tables_init()
-    return "/app/home.html"
 
 
 def is_valid(body: dict, qtd: int):
@@ -200,3 +178,16 @@ def sort_chapter():
 
     chapter = [1, 2, 14, 15, 23, 24, 91, 100, 133, 150][r.randint(0, 9)]
     return chapter
+
+
+# --------------------------------------- #
+
+
+# resetar o banco de dados
+@app.get("/reset", response_class=RedirectResponse)
+@user.admin
+async def db_reset():
+    import db_init
+
+    db_init.tables_init()
+    return "/app/home.html"
