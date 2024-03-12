@@ -14,10 +14,10 @@ def logged():
     return IS_AUTH
 
 
-def user_exists(email):
+async def user_exists(email):
     global CURRENT_USER_ID
 
-    user = db.get_user(email)
+    user = await db.get_user(email)
     CURRENT_USER_ID = user.get("id") if user else 0
     return CURRENT_USER_ID > 0
 
@@ -33,7 +33,7 @@ async def login(email, pwd):
     IS_AUTH = False
     IS_ADMIN = False
 
-    if user_exists(email):
+    if await user_exists(email):
         IS_AUTH = is_valid_pwd(email, pwd)
         IS_ADMIN = IS_AUTH and email == ADMIN_EMAIL
     elif email and pwd:
