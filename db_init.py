@@ -57,36 +57,52 @@ def tbl_create():
     print("Tabelas criadas.")
 
 
-def tables_init():
-    """Incluir dados iniciais de teste nas tabelas."""
-
+def tbl_user_init():
+    """Incluir dados iniciais de teste na tabela de usuarios"""
     con, cur = connection.get()
-
-    itens = [
-        ("Carne", "carnes e peixes", "cadastrado", 1),
-        ("Sardinha", "enlatados", "cadastrado", 1),
-        ("Banana", "frutas e verduras", "cadastrado", 1),
-        ("Queijo", "frios", "cadastrado", 1),
-        ("Leite", "laticínios", "cadastrado", 1),
-        ("Açúcar", "produtos básicos", "cadastrado", 1),
-        ("Ovos", "produtos da granja", "cadastrado", 1),
-        ("Sabão em pó", "produtos de limpeza", "cadastrado", 1),
-        ("Suco", "sucos e bebidas", "cadastrado", 1),
-    ]
 
     users = [
         (1, f"{ADMIN_USR}", f"{ADMIN_PWD}"),
     ]
 
-    cur.execute("DELETE FROM itens")
     cur.execute("DELETE FROM users")
 
     if connection.DB_TYPE == connection.TYPE_PSQL:
-        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
         cur.executemany("INSERT INTO users VALUES (%s,%s,%s)", users)
     else:
-        cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
         cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
+
+    con.commit()
+    con.close()
+
+    print("Usuário inicial incluído na tabela.")
+
+
+def tables_init():
+    """Incluir dados iniciais de teste nas tabelas."""
+    import user
+
+    con, cur = connection.get()
+
+    itens = [
+        ("Carne", "carnes e peixes", "cadastrado", user.CURRENT_USER_ID),
+        ("Sardinha", "enlatados", "cadastrado", user.CURRENT_USER_ID),
+        ("Banana", "frutas e verduras", "cadastrado", user.CURRENT_USER_ID),
+        ("Queijo", "frios", "cadastrado", user.CURRENT_USER_ID),
+        ("Leite", "laticínios", "cadastrado", user.CURRENT_USER_ID),
+        ("Açúcar", "produtos básicos", "cadastrado", user.CURRENT_USER_ID),
+        ("Ovos", "produtos da granja", "cadastrado", user.CURRENT_USER_ID),
+        ("Sabão em pó", "produtos de limpeza", "cadastrado", user.CURRENT_USER_ID),
+        ("Suco", "sucos e bebidas", "cadastrado", user.CURRENT_USER_ID),
+    ]
+
+    cur.execute("DELETE FROM itens")
+
+    if connection.DB_TYPE == connection.TYPE_PSQL:
+        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
+
+    else:
+        cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
 
     con.commit()
     con.close()
@@ -97,6 +113,7 @@ def tables_init():
 def db_reset():
     drop_tables()
     tbl_create()
+    tbl_user_init()
     tables_init()
 
 

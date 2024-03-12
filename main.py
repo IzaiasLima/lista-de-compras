@@ -7,6 +7,7 @@ import urllib.parse as html
 
 import db
 import user
+import db_init
 import static.fragments.html_add as add
 
 ERR_MSG = "Todos os campos precisam ser preenchidos!"
@@ -185,9 +186,15 @@ def sort_chapter():
 
 # resetar o banco de dados
 @app.get("/reset", response_class=RedirectResponse)
+@user.authenticated
+async def db_reset():
+    db_init.tables_init()
+    return "/app/home.html"
+
+
+# resetar a tabela de usuários
+@app.get("/reset/users", response_class=RedirectResponse)
 @user.admin
 async def db_reset():
-    import db_init
-
-    db_init.tables_init()
+    db_init.tbl_user_init()
     return "/app/home.html"
