@@ -96,7 +96,7 @@ def tables_init():
         ("Suco", "sucos e bebidas", "cadastrado", user.CURRENT_USER_ID),
     ]
 
-    cur.execute("DELETE FROM itens")
+    cur.execute(f"DELETE FROM itens WHERE user_id={user.CURRENT_USER_ID}")
 
     if connection.DB_TYPE == connection.TYPE_PSQL:
         cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
