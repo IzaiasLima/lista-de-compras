@@ -3,6 +3,11 @@
 import os
 import connection
 
+# import connection
+import user
+from db import DB
+
+
 ADMIN_USR = os.environ.get("ADMIN_USR", "admin@admin.com")
 ADMIN_PWD = os.environ.get("ADMIN_PWD", "admin")
 
@@ -12,7 +17,10 @@ print(f"Script {__name__} executado.")
 def drop_tables():
     """Excluir as tabelas"""
 
-    con, cur = connection.get()
+    # con, cur = connection.get()
+    db = DB()
+    con = db.con
+    cur = db.cur
 
     try:
         cur.execute("DROP TABLE itens")
@@ -21,13 +29,15 @@ def drop_tables():
         pass
 
     con.commit()
-    con.close()
 
 
 def tbl_create():
     """Criar as tabelas"""
 
-    con, cur = connection.get()
+    # con, cur = connection.get()
+    db = DB()
+    con = db.con
+    cur = db.cur
 
     cur.execute(
         """
@@ -52,14 +62,17 @@ def tbl_create():
     )
 
     con.commit()
-    con.close()
 
     print("Tabelas criadas.")
 
 
 def tbl_user_init():
-    """Incluir dados iniciais de teste na tabela de usuarios"""
-    con, cur = connection.get()
+    """Incluir dados iniciais de teste na tabela de usuários"""
+
+    # con, cur = connection.get()
+    db = DB()
+    con = db.con
+    cur = db.cur
 
     users = [
         (1, f"{ADMIN_USR}", f"{ADMIN_PWD}"),
@@ -73,7 +86,6 @@ def tbl_user_init():
         cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
 
     con.commit()
-    con.close()
 
     print("Usuário inicial incluído na tabela.")
 
@@ -82,7 +94,10 @@ def tables_init():
     """Incluir dados iniciais de teste nas tabelas."""
     import user
 
-    con, cur = connection.get()
+    # con, cur = connection.get()
+    db = DB()
+    con = db.con
+    cur = db.cur
 
     itens = [
         ("Carne", "carnes e peixes", "cadastrado", user.CURRENT_USER_ID),
@@ -98,14 +113,13 @@ def tables_init():
 
     cur.execute(f"DELETE FROM itens WHERE user_id={user.CURRENT_USER_ID}")
 
-    if connection.DB_TYPE == connection.TYPE_PSQL:
+    if DB.DB_TYPE == DB.TYPE_PSQL:
         cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
 
     else:
         cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
 
     con.commit()
-    con.close()
 
     print("Dados iniciais incluídos nas tabelas.")
 

@@ -1,93 +1,51 @@
-import connection
-import user
+## Borg singleton pattern connection class
+import os
+import sqlite3
+import psycopg2
+from psycopg2.extras import DictCursor
+
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 
-con, cur = connection.get()
+TYPE_SQLITE = "sqlite"
+TYPE_MYSQL = "msql"
+TYPE_PSQL = "psql"
+
+DB_TYPE = TYPE_PSQL
 
 
-def get_itens():
-    return get_dados("itens")
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL", "postgres://postgres:postgres@192.168.1.12/postgres"
+)
 
 
-def get_item(id):
-    return get_dados("itens", id)
+class DB(object):
+    """Borg pattern singleton"""
+
+    __state = {}
+
+    def __init__(self):
+        self.__dict__ = self.__state
+
+        if not hasattr(self, "con"):
+            if DB_TYPE == TYPE_PSQL:
+                self.con = psycopg2.connect(DATABASE_URL)
+                self.cur = self.con.cursor(cursor_factory=DictCursor)
+
+            elif DB_TYPE == TYPE_SQLITE:
+                self.con = sqlite3.connect("compras.db")
+                self.con.row_factory = sqlite3.Row
+                self.cur = self.con.cursor()
+
+            elif DB_TYPE == TYPE_MYSQL:
+                raise NotImplementedError("Conexão com o MySql não implementada.")
+
+            else:
+                raise NotImplementedError("Tipo de conexão não implementada.")
 
 
-def add_item(new_item):
-    add("itens", new_item)
-
-
-def del_item(id):
-    delete("itens", id)
-
-
-def get_lista():
-    selecionados = get_filtrado("itens", "selecionado")
-    cadastrados = get_filtrado("itens", "cadastrado")
-
-    lista = {"selecionados": selecionados, "cadastrados": cadastrados}
-
-    return lista
-
-
-def get_compras():
-    selecionados = get_filtrado("itens", "selecionado")
-    comprados = get_filtrado("itens", "comprado")
-
-    lista = {"selecionados": selecionados, "comprados": comprados}
-
-    return lista
-
-
-def get_dados(tbl, id=None):
-    sql = f"SELECT * FROM {tbl}"
-    sql += f" WHERE user_id={user.CURRENT_USER_ID}"
-    sql += f" AND id={id}" if id else ""
-    sql += " ORDER BY 3,2;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    dados = [dict(row) for row in rows]
-    return dados
-
-
-def get_filtrado(tbl, filtro=None):
-    sql = f"SELECT * FROM {tbl}"
-    sql += f" WHERE user_id={user.CURRENT_USER_ID}"
-    sql += f" AND status='{filtro}'" if filtro else ""
-    sql += " ORDER BY 3,2;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    dados = [dict(row) for row in rows]
-    return dados
-
-
-def add(table, dados: dict):
-    import user
-
-    if dados:
-        values = [f"'{v}'" for _, v in dados.items()]
-        all_values = ",".join(values)
-
-        sql = f"INSERT INTO {table}"
-
-        if connection.DB_TYPE == connection.TYPE_PSQL:
-            sql += f" VALUES (DEFAULT, {all_values}, {user.CURRENT_USER_ID})"
-        else:
-            sql += f" VALUES (NULL, {all_values}, {user.CURRENT_USER_ID})"
-
-        cur.execute(sql)
-        con.commit()
-
-
-def patch_status(id, status):
-    sql = f"UPDATE itens SET status='{status}'"
-    sql += f" WHERE user_id={user.CURRENT_USER_ID}"
-    sql += f" AND id={id}" if id else ""
-    cur.execute(sql)
-    con.commit()
-
-
-def delete(tbl, id):
-    sql = f"DELETE FROM {tbl} WHERE id={id}"
-    cur.execute(sql)
-    con.commit()
+if __name__ == "__main__":
+    db = DB()
+    db.cur.execute("select 1=1")
+    print(f"Conexão efetuada: {db.cur.fetchone()}")

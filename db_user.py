@@ -1,12 +1,18 @@
-import connection
+# import connection
+import user
+from db import DB
 
-con, cur = connection.get()
+
+# con, cur = connection.get()
+db = DB()
+con = db.con
+cur = db.cur
 
 
 async def add(email, pwd):
     sql = "INSERT INTO users"
 
-    if connection.DB_TYPE == connection.TYPE_PSQL:
+    if DB.DB_TYPE == DB.TYPE_PSQL:
         sql += f" VALUES (DEFAULT, '{email}', '{pwd}')"
     else:
         sql += f" VALUES (NULL, '{email}', '{pwd}')"

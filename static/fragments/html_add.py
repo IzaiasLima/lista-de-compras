@@ -9,13 +9,16 @@ def item_html():
                     <select name="categoria" required>
                         <option value="" selected hidden>Selecione</option>
                         <option value="carnes e peixes">Carnes e Peixes</option>
+                        <option value="doces e sobremesas">Doces e sobremesas</option>
                         <option value="enlatados">Enlatados</option>
                         <option value="frios">Frios</option>
                         <option value="frutas e verduras">Frutas e verduras</option>
+                        <option value="higiene pessoal">Higiene pessoal</option>
                         <option value="laticínios">Laticínios</option>
                         <option value="produtos básicos">Produtos Básicos</option>
                         <option value="produtos da granja">Produtos da granja</option>
                         <option value="produtos de limpeza">Produtos de Limpeza</option>
+                        <option value="produtos de panificação">Produtos de panificação</option>
                         <option value="sucos e bebidas">Sucos e Bebidas</option>
                     </select>
                 </td>
