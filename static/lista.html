@@ -34,7 +34,7 @@
         </div>
 
         <div class="content" hx-ext="client-side-templates">
-            <div class="w-100" hx-get="/api/lista" hx-trigger="load" hx-swap="innerHTML"
+            <div id="lista" class="w-100" hx-get="/api/lista" hx-trigger="load" hx-swap="innerHTML"
                 mustache-array-template="template">
                 <!-- Os dados vão ser exibidos aqui. -->
 
@@ -99,11 +99,14 @@
                     </table>
 
                 </section>
-
             </template>
 
-            <div class="content">
-                <a class="button alone" href="/api/lista/all/reset"> Zerar a Lista </a>
+            <div class="buttons spacer" hx-ext="client-side-templates">
+                <a class="button" hx-target="previous #lista" hx-trigger="click" hx-confirm="todos os itens"
+                    mustache-array-template="template" hx-get="/api/lista/all/reset">
+                    Refazer a lista
+                </a>
+                <a class="button" href="/app/compras.html">Fazer compras</a>
             </div>
 
             <div id="toast" class="animate__animated animate__faster">

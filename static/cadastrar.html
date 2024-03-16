@@ -82,11 +82,14 @@
                         </tbody>
                     </table>
 
-                    <div class="icon">
-                        <button class="alone" hx-trigger="click" hx-get="/api/itens/new/add" hx-target="#itens"
-                            hx-swap="innerHTML">
-                            Cadastrar um Produto
-                        </button>
+                    <div>
+                        <div class="buttons spacer" hx-ext="client-side-templates">
+                            <button hx-trigger="click" hx-get="/api/itens/new/add" hx-target="#itens"
+                                hx-swap="innerHTML">
+                                Cadastrar um Produto
+                            </button>
+                            <a class="button" href="/app/lista.html">Preparar a lista de compras</a>
+                        </div>
                     </div>
                 </section>
             </template>

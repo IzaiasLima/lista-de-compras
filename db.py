@@ -21,8 +21,6 @@ DATABASE_URL = os.environ.get(
 
 
 class DB(object):
-    """Borg pattern singleton"""
-
     __state = {}
 
     def __init__(self):

@@ -11,7 +11,7 @@ document.addEventListener(
                 reverseButtons: true,
                 // icon: 'question',
                 title: 'Favor confirmar!',
-                text: `Deseja mesmo excluir ${(evt.detail.question).toUpperCase()} da lista de itens?`,
+                text: `Deseja mesmo excluir ${(evt.detail.question).toUpperCase()} desta lista?`,
                 showClass: { popup: 'animate__animated animate__fadeInUp animate__faster' },
                 hideClass: { popup: 'animate__animated animate__zoomOut animate__faster' },
             }).then(function (res) {

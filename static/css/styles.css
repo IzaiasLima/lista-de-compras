@@ -144,7 +144,7 @@ button.swal2-cancel {
 /* Swal2 FIM */
 
 .warning {
-    color: var(--warning);
+    color: var(--warning) !important;
     font-weight: 500;
 }
 
@@ -256,6 +256,10 @@ button.swal2-cancel {
     justify-content: center;
 }
 
+.spacer {
+    margin-top: 40px;
+}
+
 ::placeholder {
     color: rgba(0, 0, 0, 0.5);
     font-weight: 100;
@@ -351,12 +355,12 @@ button.mini {
     font-weight: 500;
 }
 
-button.alone {
-    margin-top: 40px;
-}
 
 div.buttons {
+    width: 100%;
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: space-evenly;
     gap: 1em;
 }
@@ -522,6 +526,9 @@ tr.htmx-swapping td {
         font-size: 10cqw;
     }
 
+    div.buttons {
+        flex-wrap: wrap;
+    }
 
     .w-10,
     .w-15,
@@ -561,5 +568,4 @@ tr.htmx-swapping td {
         justify-content: flex-start;
         padding-left: 0;
     }
-
 }

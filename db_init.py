@@ -1,11 +1,9 @@
 # Criar a estrutura inicial do banco de dados em SQLite3.
 
 import os
-import connection
+import uuid
 
-# import connection
-import user
-from db import DB
+from db import *
 
 
 ADMIN_USR = os.environ.get("ADMIN_USR", "admin@admin.com")
@@ -17,10 +15,8 @@ print(f"Script {__name__} executado.")
 def drop_tables():
     """Excluir as tabelas"""
 
-    # con, cur = connection.get()
-    db = DB()
-    con = db.con
-    cur = db.cur
+    con = DB().con
+    cur = DB().cur
 
     try:
         cur.execute("DROP TABLE itens")
@@ -34,10 +30,8 @@ def drop_tables():
 def tbl_create():
     """Criar as tabelas"""
 
-    # con, cur = connection.get()
-    db = DB()
-    con = db.con
-    cur = db.cur
+    con = DB().con
+    cur = DB().cur
 
     cur.execute(
         """
@@ -47,6 +41,7 @@ def tbl_create():
                 categoria text,
                 status text,
                 user_id integer
+                user_email text
             )
         """
     )
@@ -69,10 +64,8 @@ def tbl_create():
 def tbl_user_init():
     """Incluir dados iniciais de teste na tabela de usuários"""
 
-    # con, cur = connection.get()
-    db = DB()
-    con = db.con
-    cur = db.cur
+    con = DB().con
+    cur = DB().cur
 
     users = [
         (1, f"{ADMIN_USR}", f"{ADMIN_PWD}"),
@@ -80,7 +73,7 @@ def tbl_user_init():
 
     cur.execute("DELETE FROM users")
 
-    if connection.DB_TYPE == connection.TYPE_PSQL:
+    if DB_TYPE == TYPE_PSQL:
         cur.executemany("INSERT INTO users VALUES (%s,%s,%s)", users)
     else:
         cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
@@ -90,30 +83,28 @@ def tbl_user_init():
     print("Usuário inicial incluído na tabela.")
 
 
-def tables_init():
+def tables_init(user_email):
     """Incluir dados iniciais de teste nas tabelas."""
-    import user
 
     # con, cur = connection.get()
-    db = DB()
-    con = db.con
-    cur = db.cur
+    con = DB().con
+    cur = DB().cur
 
     itens = [
-        ("Carne", "carnes e peixes", "cadastrado", user.CURRENT_USER_ID),
-        ("Sardinha", "enlatados", "cadastrado", user.CURRENT_USER_ID),
-        ("Banana", "frutas e verduras", "cadastrado", user.CURRENT_USER_ID),
-        ("Queijo", "frios", "cadastrado", user.CURRENT_USER_ID),
-        ("Leite", "laticínios", "cadastrado", user.CURRENT_USER_ID),
-        ("Açúcar", "produtos básicos", "cadastrado", user.CURRENT_USER_ID),
-        ("Ovos", "produtos da granja", "cadastrado", user.CURRENT_USER_ID),
-        ("Sabão em pó", "produtos de limpeza", "cadastrado", user.CURRENT_USER_ID),
-        ("Suco", "sucos e bebidas", "cadastrado", user.CURRENT_USER_ID),
+        ("Carne", "carnes e peixes", "cadastrado", user_email),
+        ("Sardinha", "enlatados", "cadastrado", user_email),
+        ("Banana", "frutas e verduras", "cadastrado", user_email),
+        ("Queijo", "frios", "cadastrado", user_email),
+        ("Leite", "laticínios", "cadastrado", user_email),
+        ("Açúcar", "produtos básicos", "cadastrado", user_email),
+        ("Ovos", "produtos da granja", "cadastrado", user_email),
+        ("Sabão em pó", "produtos de limpeza", "cadastrado", user_email),
+        ("Suco", "sucos e bebidas", "cadastrado", user_email),
     ]
 
-    cur.execute(f"DELETE FROM itens WHERE user_id={user.CURRENT_USER_ID}")
+    cur.execute(f"DELETE FROM itens WHERE user_id={user_email}")
 
-    if DB.DB_TYPE == DB.TYPE_PSQL:
+    if DB_TYPE == TYPE_PSQL:
         cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
 
     else:
@@ -124,12 +115,17 @@ def tables_init():
     print("Dados iniciais incluídos nas tabelas.")
 
 
-def db_reset():
+def db_reset(user_email):
     drop_tables()
     tbl_create()
     tbl_user_init()
-    tables_init()
+    tables_init(user_email)
+
+
+def get_random_id():
+    """Gera um id randômico"""
+    return str(uuid.uuid4())
 
 
 if __name__ == "__main__":
-    db_reset()
+    db_reset("admin@admin.com")
