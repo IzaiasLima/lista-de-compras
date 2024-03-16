@@ -24,8 +24,11 @@
             <a class="button" hx-target="this" hx-post="/login" hx-include="#login">Entrar</a>
 
             <div class="buttons">
-                <button class="mini secondary">Esqueci a senha</button>
-                <button class="mini secondary">Cadastrar</button>
+                <button class="mini secondary" onclick="showToast('Envie e-mail para suporte@izaias.dev')">Esqueci a
+                    senha</button>
+                <button class="mini secondary" hx-target="this" hx-post="/cadastrar"
+                    hx-include="#login">Cadastrar</button>
+                <!-- <button class="">Cadastrar</button> -->
             </div>
         </div>
 

@@ -8,6 +8,7 @@ import urllib.parse as html
 import static.fragments.html_add as add
 import db_api as db
 import db_user as user
+import db_init
 import session
 import auth
 
@@ -50,21 +51,29 @@ async def root():
     return "/app/login.html"
 
 
-# @app.post("/login_", response_class=HTMLResponse)
-# async def login(body: dict = Depends(get_body)):
-#     await user.login(body.get("user"), body.get("passwd"))
-
-#     if user.logged():
-#         URL = "<script>window.location.href='/app/home.html'</script>"
-#         return URL
-#     else:
-#         raise HTTPException(status_code=401, detail="Usuário ou senha inválidos.")
-
-
-@app.post("/login")
+@app.post("/cadastrar", response_class=HTMLResponse)
 async def login(body: dict = Depends(get_body)):
     username = body.get("user")
     password = body.get("passwd")
+
+    if len(username) == 0:
+        raise HTTPException(status_code=400, detail="Usuário inválido.")
+
+    if user.exists(username):
+        raise HTTPException(status_code=400, detail="Usuário informado já existe.")
+
+    await user.add(username, password)
+    return continue_login(username, password)
+
+
+@app.post("/login", response_class=HTMLResponse)
+async def login(body: dict = Depends(get_body)):
+    username = body.get("user")
+    password = body.get("passwd")
+    return continue_login(username, password)
+
+
+def continue_login(username, password):
 
     allow = user.is_valid_pwd(username, password)
 
@@ -76,12 +85,12 @@ async def login(body: dict = Depends(get_body)):
     if not session_id:
         session_id = session.get_random_id()
 
-    URL = "<script>window.location.href='/app/home.html'</script>"
-    response = HTMLResponse(URL)
-
-    # response = RedirectResponse("/app/home.html", status_code=302)
-    response.set_cookie(key="Authorization", value=session_id)
     session.add(session_id, username)
+
+    URL = "<script>window.location.href='/app/home.html'</script>"
+
+    response = HTMLResponse(URL)
+    response.set_cookie(key="Authorization", value=session_id)
 
     return response
 
@@ -89,11 +98,11 @@ async def login(body: dict = Depends(get_body)):
 @app.get("/logout")
 async def session_logout(req: Request):
     session_id = req.cookies.get("Authorization")
+    session.remove(session_id)
+
     URL = "<script>window.location.href='/app/login.html'</script>"
     response = HTMLResponse(URL)
-
     response.delete_cookie(key="Authorization")
-    session.remove(session_id)
 
     return response
 
@@ -225,9 +234,5 @@ def sort_chapter():
 @app.get("/reset", response_class=RedirectResponse)
 @auth.authenticated
 async def db_reset(request: Request):
-    import db_init
-
-    # db_init.tbl_user_init()
-
     db_init.tables_init(session.get_user(request))
     return "/app/home.html"

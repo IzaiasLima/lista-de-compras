@@ -102,7 +102,7 @@ def tables_init(user_email):
         ("Suco", "sucos e bebidas", "cadastrado", user_email),
     ]
 
-    cur.execute(f"DELETE FROM itens WHERE user_id={user_email}")
+    cur.execute(f"DELETE FROM itens WHERE user_email='{user_email}'")
 
     if DB_TYPE == TYPE_PSQL:
         cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
@@ -115,7 +115,7 @@ def tables_init(user_email):
     print("Dados iniciais incluídos nas tabelas.")
 
 
-def db_reset(user_email):
+def __db_reset__(user_email):
     drop_tables()
     tbl_create()
     tbl_user_init()
@@ -128,4 +128,4 @@ def get_random_id():
 
 
 if __name__ == "__main__":
-    db_reset("admin@admin.com")
+    __db_reset__("admin@admin.com")
