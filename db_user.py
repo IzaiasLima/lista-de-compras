@@ -7,15 +7,21 @@ cur = DB().cur
 
 
 async def add(email, pwd):
-    sql = "INSERT INTO users"
-
     pwd_crypto = hashlib.sha256(pwd.encode("utf-8")).hexdigest()
+    sql = "INSERT INTO users"
 
     if DB_TYPE == TYPE_PSQL:
         sql += f" VALUES (DEFAULT, '{email}', '{pwd_crypto}')"
     else:
         sql += f" VALUES (NULL, '{email}', '{pwd_crypto}')"
 
+    cur.execute(sql)
+    con.commit()
+
+
+async def update_pwd(email, newpwd):
+    new_pwd_crypto = hashlib.sha256(newpwd.encode("utf-8")).hexdigest()
+    sql = f"UPDATE users SET passwd='{new_pwd_crypto}' WHERE email='{email}'"
     cur.execute(sql)
     con.commit()
 

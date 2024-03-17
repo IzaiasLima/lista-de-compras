@@ -25,8 +25,8 @@ app = FastAPI(
 app.mount("/app", StaticFiles(directory="static", html="True"), name="static")
 
 
-async def get_body(req: Request):
-    payload = await req.body()
+async def get_body(request: Request):
+    payload = await request.body()
     payload = payload.decode("utf8")
     payload = html.unquote(payload)
 
@@ -52,18 +52,40 @@ async def root():
 
 
 @app.post("/cadastrar", response_class=HTMLResponse)
-async def login(body: dict = Depends(get_body)):
-    username = body.get("user")
-    password = body.get("passwd")
+async def add_user(body: dict = Depends(get_body)):
+    username: str = body.get("user")
+    password: str = body.get("passwd")
 
-    if len(username) == 0:
-        raise HTTPException(status_code=400, detail="Usuário inválido.")
+    if len(username.strip()) == 0 or len(password.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Usuário ou senha inválidos.")
 
     if user.exists(username):
         raise HTTPException(status_code=400, detail="Usuário informado já existe.")
 
     await user.add(username, password)
     return continue_login(username, password)
+
+
+@app.post("/newpwd", response_class=HTMLResponse)
+@auth.authenticated
+async def new_passwd(request: Request, body: dict = Depends(get_body)):
+    username = session.get_user(request)
+    oldpwd = body.get("oldpwd")
+    newpwd = body.get("newpwd")
+
+    allow = user.is_valid_pwd(username, oldpwd)
+
+    if len(newpwd.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Nova senha inválida.")
+
+    if not allow:
+        raise HTTPException(status_code=401, detail="Senha anterior não confere.")
+
+    await user.update_pwd(username, newpwd)
+
+    URL = "<script>window.location.href='/app/home.html'</script>"
+    response = HTMLResponse(URL)
+    return response
 
 
 @app.post("/login", response_class=HTMLResponse)
@@ -74,11 +96,10 @@ async def login(body: dict = Depends(get_body)):
 
 
 def continue_login(username, password):
-
     allow = user.is_valid_pwd(username, password)
 
     if not allow:
-        raise HTTPException(status_code=401, detail="Usuário ou senha inválida.")
+        raise HTTPException(status_code=401, detail="Usuário/senha não confere.")
 
     session_id = session.get_id(username)
 
@@ -88,10 +109,8 @@ def continue_login(username, password):
     session.add(session_id, username)
 
     URL = "<script>window.location.href='/app/home.html'</script>"
-
     response = HTMLResponse(URL)
     response.set_cookie(key="Authorization", value=session_id)
-
     return response
 
 
@@ -108,7 +127,6 @@ async def session_logout(req: Request):
 
 
 @app.get("/api/capitulo", response_class=JSONResponse)
-# @authorize(["xxx"])
 async def salmos():
     res = {"capitulo": sort_chapter()}
     return res
@@ -177,7 +195,6 @@ async def list_reset(request: Request):
     email = session.get_user(request)
     db.patch_status(None, email, "cadastrado")
     return db.get_lista(email)
-    # return "/app/lista.html"
 
 
 @app.patch("/api/lista/{id}/adicionar", response_class=JSONResponse)

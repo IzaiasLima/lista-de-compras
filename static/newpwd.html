@@ -13,20 +13,19 @@
 </head>
 
 <body>
+    <div class="header">
+        <a href="/app/home.html">
+            <i class="material-symbols-outlined">arrow_back</i>
+        </a>
+        <span>&nbsp;</span>
+    </div>
+
     <div class="container">
         <div id="login">
-            <input type="text" name="user" placeholder="Usuário">
-            <input type="password" name="passwd" placeholder="Senha">
+            <input type="password" name="oldpwd" placeholder="Senha anterior">
+            <input type="password" name="newpwd" placeholder="Nova senha">
 
-            <a class="button" hx-target="this" hx-post="/login" hx-include="#login">Entrar</a>
-
-            <div class="buttons">
-                <button class="mini secondary" onclick="showToast('Envie e-mail para suporte@izaias.dev')">Esqueci a
-                    senha</button>
-                <button class="mini secondary" hx-target="this" hx-post="/cadastrar"
-                    hx-include="#login">Cadastrar</button>
-                <!-- <button class="">Cadastrar</button> -->
-            </div>
+            <a class="button" hx-target="this" hx-post="/newpwd" hx-include="#login">Trocar a senha</a>
         </div>
 
         <div id="toast" class="animate__animated animate__faster">

@@ -1,4 +1,3 @@
-## Borg singleton pattern connection class
 import os
 import sqlite3
 import psycopg2
@@ -20,6 +19,7 @@ DATABASE_URL = os.environ.get(
 )
 
 
+## Borg singleton pattern connection class
 class DB(object):
     __state = {}
 

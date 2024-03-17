@@ -1,5 +1,3 @@
-# Criar a estrutura inicial do banco de dados em SQLite3.
-
 import os
 import uuid
 
@@ -86,7 +84,6 @@ def tbl_user_init():
 def tables_init(user_email):
     """Incluir dados iniciais de teste nas tabelas."""
 
-    # con, cur = connection.get()
     con = DB().con
     cur = DB().cur
 

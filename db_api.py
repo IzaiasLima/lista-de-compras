@@ -41,7 +41,6 @@ def get_compras(user_email):
 
 def get_dados(tbl, user_email, id=None):
     sql = f"SELECT * FROM {tbl}"
-    # sql += f" WHERE user_id={user.CURRENT_USER_ID}"
     sql += f" WHERE user_email='{user_email}'"
     sql += f" AND id={id}" if id else ""
     sql += " ORDER BY 3,2;"
@@ -53,7 +52,6 @@ def get_dados(tbl, user_email, id=None):
 
 def get_filtrado(tbl, user_email, filtro=None):
     sql = f"SELECT * FROM {tbl}"
-    # sql += f" WHERE user_id={user.CURRENT_USER_ID}"
     sql += f" WHERE user_email='{user_email}'"
     sql += f" AND status='{filtro}'" if filtro else ""
     sql += " ORDER BY 3,2;"
@@ -81,7 +79,6 @@ def add(table, user_email, dados: dict):
 
 def patch_status(id, user_email, status):
     sql = f"UPDATE itens SET status='{status}'"
-    # sql += f" WHERE user_id={user.CURRENT_USER_ID}"
     sql += f" WHERE user_email='{user_email}'"
     sql += f" AND id={id}" if id else ""
     cur.execute(sql)
