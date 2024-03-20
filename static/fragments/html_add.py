@@ -11,6 +11,7 @@ def item_html():
                         <option value="carnes e peixes">Carnes e Peixes</option>
                         <option value="doces e sobremesas">Doces e sobremesas</option>
                         <option value="enlatados">Enlatados</option>
+                        <option value="grãos e farinhas">Frios</option>
                         <option value="frios">Frios</option>
                         <option value="frutas e verduras">Frutas e verduras</option>
                         <option value="higiene pessoal">Higiene pessoal</option>
