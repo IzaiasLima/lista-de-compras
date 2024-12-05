@@ -52,7 +52,7 @@ async def root():
 
 
 @app.post("/cadastrar", response_class=HTMLResponse)
-async def add_user(body: dict = Depends(get_body)):
+async def add_user(request:Request, body: dict = Depends(get_body)):
     username: str = body.get("user")
     password: str = body.get("passwd")
 
@@ -63,6 +63,10 @@ async def add_user(body: dict = Depends(get_body)):
         raise HTTPException(status_code=400, detail="Usuário informado já existe.")
 
     await user.add(username, password)
+    
+    # cadastrar lista inicial de produtos
+    db_init.init_itens_table(username)
+
     return continue_login(username, password)
 
 
@@ -251,5 +255,5 @@ def sort_chapter():
 @app.get("/reset", response_class=RedirectResponse)
 @auth.authenticated
 async def db_reset(request: Request):
-    db_init.tables_init(session.get_user(request))
+    db_init.init_itens_table(session.get_user(request))
     return "/app/home.html"

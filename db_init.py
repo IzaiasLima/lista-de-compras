@@ -3,9 +3,9 @@ import uuid
 
 from db import *
 
-
+DB_TYPE = os.environ.get("DB_TYPE", TYPE_PSQL)
 ADMIN_USR = os.environ.get("ADMIN_USR", "admin@admin.com")
-ADMIN_PWD = os.environ.get("ADMIN_PWD", "admin")
+ADMIN_PWD = os.environ.get("ADMIN_PWD", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
 
 print(f"Script {__name__} executado.")
 
@@ -25,20 +25,25 @@ def drop_tables():
     con.commit()
 
 
-def tbl_create():
+def create_tables():
     """Criar as tabelas"""
 
     con = DB().con
     cur = DB().cur
 
+    PRIMARY_KEY = (
+        "id SERIAL PRIMARY KEY"
+        if DB_TYPE == TYPE_PSQL
+        else "id integer PRIMARY KEY AUTOINCREMENT"
+    )
+
     cur.execute(
-        """
+        f"""
             CREATE TABLE IF NOT EXISTS itens
-            (   id SERIAL NOT NULL PRIMARY KEY,
+            (   {PRIMARY_KEY},
                 nome text,
                 categoria text,
                 status text,
-                user_id integer
                 user_email text
             )
         """
@@ -59,29 +64,29 @@ def tbl_create():
     print("Tabelas criadas.")
 
 
-def tbl_user_init():
+def init_user_table():
     """Incluir dados iniciais de teste na tabela de usuários"""
 
     con = DB().con
     cur = DB().cur
 
     users = [
-        (1, f"{ADMIN_USR}", f"{ADMIN_PWD}"),
+        (f"{ADMIN_USR}", f"{ADMIN_PWD}"),
     ]
 
     cur.execute("DELETE FROM users")
 
     if DB_TYPE == TYPE_PSQL:
-        cur.executemany("INSERT INTO users VALUES (%s,%s,%s)", users)
+        cur.executemany("INSERT INTO users VALUES (DEFAULT, %s,%s)", users)
     else:
-        cur.executemany("INSERT INTO users VALUES (?,?,?)", users)
+        cur.executemany("INSERT INTO users VALUES (NULL,?,?)", users)
 
     con.commit()
 
     print("Usuário inicial incluído na tabela.")
 
 
-def tables_init(user_email):
+def init_itens_table(user_email):
     """Incluir dados iniciais de teste nas tabelas."""
 
     con = DB().con
@@ -114,9 +119,9 @@ def tables_init(user_email):
 
 def __db_reset__(user_email):
     drop_tables()
-    tbl_create()
-    tbl_user_init()
-    tables_init(user_email)
+    create_tables()
+    init_user_table()
+    init_itens_table(user_email)
 
 
 def get_random_id():

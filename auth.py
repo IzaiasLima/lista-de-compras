@@ -1,3 +1,4 @@
+import os
 from fastapi import HTTPException
 from fastapi.security import HTTPBearer
 from functools import wraps
@@ -5,9 +6,8 @@ from functools import wraps
 from session import valid
 
 ROLES = {"admin": []}
-ADMIN_EMAIL = "admin@admin.com"
-SECRET_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-
+ADMIN_EMAIL = os.environ.get("ADMIN_USR", "admin@admin.com")
+SECRET_KEY = os.environ.get("ADMIN_PWD", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
 
 def authenticated(func):
     @wraps(func)

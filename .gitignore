@@ -1,5 +1,5 @@
 .vscode
 .env
-/env
+/venv
 **/__pycache__/
 *.db
