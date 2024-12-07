@@ -9,15 +9,15 @@ def get_itens(user_email):
     return get_dados("itens", user_email)
 
 
-def get_item(id, user_email):
+def get_iten(id, user_email):
     return get_dados("itens", user_email, id)
 
 
-def add_item(new_item, user_email):
-    add("itens", user_email, new_item)
+def add_iten(new_iten, user_email):
+    add("itens", user_email, new_iten)
 
 
-def del_item(id):
+def del_iten(id):
     delete("itens", id)
 
 

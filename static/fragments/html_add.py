@@ -1,4 +1,4 @@
-def item_html():
+def iten_html():
     html = f"""
         <h4>Cadastrar um produto</h4>
 
@@ -8,19 +8,27 @@ def item_html():
                 <td>
                     <select name="categoria" required>
                         <option value="" selected hidden>Selecione</option>
-                        <option value="carnes e peixes">Carnes e Peixes</option>
+                        <option value="bolachas e biscoitos">Bolachas e biscoitos</option>
+                        <option value="carnes e pescado">Carnes e pescado</option>
                         <option value="doces e sobremesas">Doces e sobremesas</option>
                         <option value="enlatados">Enlatados</option>
-                        <option value="grãos e farinhas">Frios</option>
+                        <option value="farinhas e cereais">Farinhas e cereais</option>
+                        <option value="farmácia">Farmácia</option>
                         <option value="frios">Frios</option>
-                        <option value="frutas e verduras">Frutas e verduras</option>
+                        <option value="horti-fruti">Horti-fruti</option>
                         <option value="higiene pessoal">Higiene pessoal</option>
                         <option value="laticínios">Laticínios</option>
+                        <option value="limpeza">Limpeza</option>
+                        <option value="massas">Massas</option>
+                        <option value="mercearia">Mercearia</option>
+                        <option value="óleos">Óleos</option>
                         <option value="produtos básicos">Produtos Básicos</option>
-                        <option value="produtos da granja">Produtos da granja</option>
-                        <option value="produtos de limpeza">Produtos de Limpeza</option>
-                        <option value="produtos de panificação">Produtos de panificação</option>
+                        <option value="produtos naturais">Produtos naturais</option>
+                        <option value="padaria">Padaria</option>
+                        <option value="shopping">Shopping</option>
                         <option value="sucos e bebidas">Sucos e Bebidas</option>
+                        <option value="temperos">Temperos</option>
+                        <option value="utilidades">Utilidades</option>
                     </select>
                 </td>
                 <td><input type="hidden" name="status" value="cadastrado"></td>

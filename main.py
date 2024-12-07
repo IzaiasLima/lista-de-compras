@@ -131,31 +131,31 @@ async def session_logout(req: Request):
 
 
 @app.get("/api/capitulo", response_class=JSONResponse)
-async def salmos():
+async def psalm_of_day():
     res = {"capitulo": sort_chapter()}
     return res
 
 
 @app.get("/api/itens", response_class=JSONResponse)
 @auth.authenticated
-async def get_itens(request: Request):
+async def get_itens_list(request: Request):
     dados = db.get_itens(session.get_user(request))
     return dados
 
 
 @app.get("/api/itens/{id}", response_class=JSONResponse)
 @auth.authenticated
-async def get_item(id, request: Request):
-    dados = db.get_item(id, session.get_user(request))
+async def get_iten(id, request: Request):
+    dados = db.get_iten(id, session.get_user(request))
     return dados
 
 
 @app.post("/api/itens", response_class=JSONResponse)
 @auth.authenticated
-async def add_item(request: Request, body=Depends(get_body)):
+async def add_iten(request: Request, body=Depends(get_body)):
     if is_valid(body, 3):
         email = session.get_user(request)
-        db.add_item(body, email)
+        db.add_iten(body, email)
         dados = db.get_itens(email)
         return dados
     else:
@@ -164,14 +164,14 @@ async def add_item(request: Request, body=Depends(get_body)):
 
 @app.get("/api/compras", response_class=JSONResponse)
 @auth.authenticated
-async def get_compras(request: Request):
+async def get_shopping_list(request: Request):
     dados = db.get_compras(session.get_user(request))
     return dados
 
 
 @app.patch("/api/compras/{id}/adicionar", response_class=JSONResponse)
 @auth.authenticated
-async def item_select(request: Request, id):
+async def iten_car_add(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "comprado")
     dados = db.get_compras(email)
@@ -180,7 +180,7 @@ async def item_select(request: Request, id):
 
 @app.patch("/api/compras/{id}/remover", response_class=JSONResponse)
 @auth.authenticated
-async def item_remove(request: Request, id):
+async def iten_car_remove(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "selecionado")
     dados = db.get_compras(email)
@@ -189,13 +189,13 @@ async def item_remove(request: Request, id):
 
 @app.get("/api/lista", response_class=JSONResponse)
 @auth.authenticated
-async def get_lista(request: Request):
+async def get_all_itens_list(request: Request):
     return db.get_lista(session.get_user(request))
 
 
 @app.get("/api/lista/all/reset", response_class=JSONResponse)
 @auth.authenticated
-async def list_reset(request: Request):
+async def shopping_list_reset(request: Request):
     email = session.get_user(request)
     db.patch_status(None, email, "cadastrado")
     return db.get_lista(email)
@@ -203,7 +203,7 @@ async def list_reset(request: Request):
 
 @app.patch("/api/lista/{id}/adicionar", response_class=JSONResponse)
 @auth.authenticated
-async def item_lista_add(request: Request, id):
+async def iten_lista_add(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "selecionado")
     return db.get_lista(email)
@@ -211,7 +211,7 @@ async def item_lista_add(request: Request, id):
 
 @app.patch("/api/lista/{id}/remover", response_class=JSONResponse)
 @auth.authenticated
-async def item_lista_remove(request: Request, id):
+async def iten_lista_remove(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "cadastrado")
     return db.get_lista(email)
@@ -219,8 +219,8 @@ async def item_lista_remove(request: Request, id):
 
 @app.delete("/api/itens/{id}", response_class=HTMLResponse)
 @auth.authenticated
-async def del_item(request: Request, id):
-    db.del_item(id)
+async def del_iten(request: Request, id):
+    db.del_iten(id)
     return ""
 
 
@@ -230,8 +230,8 @@ async def del_item(request: Request, id):
 # retornar template para incluir item
 @app.get("/api/itens/new/add", response_class=HTMLResponse)
 @auth.authenticated
-async def add_item(request: Request):
-    return add.item_html()
+async def get_add_iten_template(request: Request):
+    return add.iten_html()
 
 
 # --------------------------------------- #
