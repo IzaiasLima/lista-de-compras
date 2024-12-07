@@ -44,7 +44,7 @@ class DB(object):
             else:
                 raise NotImplementedError("Tipo de conexão não implementada.")
             
-            print (f"Conectado a {DATABASE_URL}.")
+            print (f"Sistema conectado à base de dados: {DATABASE_URL}.")
 
 
 if __name__ == "__main__":

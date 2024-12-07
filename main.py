@@ -244,7 +244,7 @@ def is_valid(body: dict, qtd: int):
 def sort_chapter():
     import random as r
 
-    chapter = [1, 2, 14, 15, 23, 24, 91, 100, 133, 150][r.randint(0, 9)]
+    chapter = [1, 2, 14, 15, 19, 23, 24, 84, 91, 100, 133, 150][r.randint(0, 9)]
     return chapter
 
 
@@ -252,8 +252,8 @@ def sort_chapter():
 
 
 # resetar o banco de dados
-@app.get("/reset", response_class=RedirectResponse)
+@app.delete("/reset", response_class=JSONResponse)
 @auth.authenticated
 async def db_reset(request: Request):
     db_init.init_itens_table(session.get_user(request))
-    return "/app/home.html"
+    return

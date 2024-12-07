@@ -2,6 +2,7 @@ import os
 import uuid
 
 from db import *
+from itens import ler_csv
 
 DB_TYPE = os.environ.get("DB_TYPE", TYPE_PSQL)
 ADMIN_USR = os.environ.get("ADMIN_USR", "admin@admin.com")
@@ -50,9 +51,9 @@ def create_tables():
     )
 
     cur.execute(
-        """
+        f"""
             CREATE TABLE IF NOT EXISTS users
-            (   id SERIAL NOT NULL PRIMARY KEY,
+            (   {PRIMARY_KEY},
                 email text,
                 passwd text
             )
@@ -92,29 +93,31 @@ def init_itens_table(user_email):
     con = DB().con
     cur = DB().cur
 
-    itens = [
-        ("Carne", "carnes e peixes", "cadastrado", user_email),
-        ("Sardinha", "enlatados", "cadastrado", user_email),
-        ("Banana", "frutas e verduras", "cadastrado", user_email),
-        ("Queijo", "frios", "cadastrado", user_email),
-        ("Leite", "laticínios", "cadastrado", user_email),
-        ("Açúcar", "produtos básicos", "cadastrado", user_email),
-        ("Ovos", "produtos da granja", "cadastrado", user_email),
-        ("Sabão em pó", "produtos de limpeza", "cadastrado", user_email),
-        ("Suco", "sucos e bebidas", "cadastrado", user_email),
-    ]
+    itens_iniciais = ler_csv('itens.csv', user_email)
+
+    # itens = [
+    #     ("Carne", "carnes e peixes", "cadastrado", user_email),
+    #     ("Sardinha", "enlatados", "cadastrado", user_email),
+    #     ("Banana", "frutas e verduras", "cadastrado", user_email),
+    #     ("Queijo", "frios", "cadastrado", user_email),
+    #     ("Leite", "laticínios", "cadastrado", user_email),
+    #     ("Açúcar", "produtos básicos", "cadastrado", user_email),
+    #     ("Ovos", "produtos da granja", "cadastrado", user_email),
+    #     ("Sabão em pó", "produtos de limpeza", "cadastrado", user_email),
+    #     ("Suco", "sucos e bebidas", "cadastrado", user_email),
+    # ]
 
     cur.execute(f"DELETE FROM itens WHERE user_email='{user_email}'")
 
     if DB_TYPE == TYPE_PSQL:
-        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens)
+        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens_iniciais)
 
     else:
-        cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens)
+        cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens_iniciais)
 
     con.commit()
 
-    print("Dados iniciais incluídos nas tabelas.")
+    print("Lista de Itens iniciais adicionados à tabela.")
 
 
 def __db_reset__(user_email):
