@@ -3,13 +3,11 @@
 :root {
     --body-color: #efefef;
     --border-color: rgba(26, 86, 48, 0.2);
-    /* --bg-color: linear-gradient(to left top, #e676aa, #ed9490, #faeeaa, #c3ffb4, #73c85e); */
     --bg-color: linear-gradient(135deg, #fdeff9, #cc6dcc);
     --bg-card-color: linear-gradient(135deg, #ffade7, #680165);
     --bg-menu: rgba(157, 82, 145, 0.2);
     --bg-primary: #fff;
     --bg-secondary: #eeeeee;
-    /* --btn-primary: #8dcd7d; */
     --btn-primary: #680165;
     --btn-font-primary: #fff;
     --secondary: #8c558a;
@@ -52,7 +50,6 @@ body {
     border-radius: 16px;
     backdrop-filter: blur(7px);
     -webkit-backdrop-filter: blur(7px);
-    /* border: 1px solid var(--body-color); */
     border-radius: 0;
     z-index: 100;
 }
@@ -80,7 +77,6 @@ body {
     justify-content: center;
     overflow: hidden;
 }
-
 
 
 .home {
@@ -231,7 +227,6 @@ button.swal2-cancel {
     height: 14vw;
     width: 14vw;
     padding: 15px 7px 0;
-    /* color: #fff; */
     background-image: var(--bg-card-color);
     border-radius: 15% 73% 21% 68% / 17% 35% 21% 29%;
     box-shadow: 4px 4px 4px rgba(128, 128, 128, 0.2);
@@ -243,7 +238,6 @@ button.swal2-cancel {
     font-weight: 600;
     text-decoration: none;
     color: #fff;
-    /* color: var(--font-primary); */
 }
 
 .card a p {
@@ -263,7 +257,6 @@ button.swal2-cancel {
 ::placeholder {
     color: rgba(0, 0, 0, 0.5);
     font-weight: 100;
-    /* opacity: 0.5; */
 }
 
 input {
@@ -310,7 +303,6 @@ a.button {
     width: 100%;
     margin-bottom: 10px;
     padding: 0 1rem;
-    /* color: var(--font-primary); */
     color: var(--btn-font-primary);
     font-size: 1.3em;
     font-weight: 600;
@@ -368,7 +360,6 @@ div.buttons {
 div.icon {
     display: flex;
     justify-content: center;
-    /* margin-bottom: 15px; */
     color: var(--secondary);
 }
 
@@ -395,16 +386,20 @@ tr {
 
 tr:not(.form):nth-child(odd)>td {
     background: rgba(201, 201, 201, 0.3);
-    /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); */
 }
 
 tr:not(.form):nth-child(even)>td {
     background: rgba(10, 10, 10, 0.1);
-    /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); */
 }
 
+
 td:first-child {
+    max-width: 80vw;
     white-space: nowrap;
+}
+
+.form td:first-child {
+    max-width: 100%;
 }
 
 td.icon {
@@ -442,7 +437,6 @@ tr.htmx-swapping td {
 }
 
 @media (max-width: 992px) {
-
     select,
     input,
     button,
@@ -465,11 +459,6 @@ tr.htmx-swapping td {
     table {
         font-size: 1em;
     }
-
-    /* th.m-hidden,
-    td.m-hidden {
-        display: none;
-    } */
 }
 
 @media (max-width: 992px) and (orientation: portrait) {
@@ -513,11 +502,9 @@ tr.htmx-swapping td {
         flex-wrap: nowrap;
         text-align: start;
         justify-content: start;
-        /* gap: 15px; */
     }
 
     .card a p {
-        /* padding-top: 5px; */
         font-size: 4.3cqw;
     }
 

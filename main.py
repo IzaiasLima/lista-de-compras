@@ -105,7 +105,7 @@ def continue_login(username, password):
     if not allow:
         raise HTTPException(status_code=401, detail="Usuário/senha não confere.")
 
-    session_id = session.get_id(username)
+    session_id = session.get_session(username)
 
     if not session_id:
         session_id = session.get_random_id()
@@ -139,14 +139,14 @@ async def psalm_of_day():
 @app.get("/api/itens", response_class=JSONResponse)
 @auth.authenticated
 async def get_itens_list(request: Request):
-    dados = db.get_itens(session.get_user(request))
+    dados = await db.get_itens(session.get_user(request))
     return dados
 
 
 @app.get("/api/itens/{id}", response_class=JSONResponse)
 @auth.authenticated
 async def get_iten(id, request: Request):
-    dados = db.get_iten(id, session.get_user(request))
+    dados = await db.get_iten(id, session.get_user(request))
     return dados
 
 
@@ -156,7 +156,7 @@ async def add_iten(request: Request, body=Depends(get_body)):
     if is_valid(body, 3):
         email = session.get_user(request)
         db.add_iten(body, email)
-        dados = db.get_itens(email)
+        dados = await db.get_itens(email)
         return dados
     else:
         raise HTTPException(status_code=422, detail=ERR_MSG)
@@ -165,7 +165,7 @@ async def add_iten(request: Request, body=Depends(get_body)):
 @app.get("/api/compras", response_class=JSONResponse)
 @auth.authenticated
 async def get_shopping_list(request: Request):
-    dados = db.get_compras(session.get_user(request))
+    dados = await db.get_compras(session.get_user(request))
     return dados
 
 
@@ -174,7 +174,7 @@ async def get_shopping_list(request: Request):
 async def iten_car_add(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "comprado")
-    dados = db.get_compras(email)
+    dados = await db.get_compras(email)
     return dados
 
 
@@ -183,14 +183,14 @@ async def iten_car_add(request: Request, id):
 async def iten_car_remove(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "selecionado")
-    dados = db.get_compras(email)
+    dados = await db.get_compras(email)
     return dados
 
 
 @app.get("/api/lista", response_class=JSONResponse)
 @auth.authenticated
 async def get_all_itens_list(request: Request):
-    return db.get_lista(session.get_user(request))
+    return await db.get_lista(session.get_user(request))
 
 
 @app.get("/api/lista/all/reset", response_class=JSONResponse)
@@ -198,7 +198,7 @@ async def get_all_itens_list(request: Request):
 async def shopping_list_reset(request: Request):
     email = session.get_user(request)
     db.patch_status(None, email, "cadastrado")
-    return db.get_lista(email)
+    return await db.get_lista(email)
 
 
 @app.patch("/api/lista/{id}/adicionar", response_class=JSONResponse)
@@ -206,7 +206,7 @@ async def shopping_list_reset(request: Request):
 async def iten_lista_add(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "selecionado")
-    return db.get_lista(email)
+    return await db.get_lista(email)
 
 
 @app.patch("/api/lista/{id}/remover", response_class=JSONResponse)
@@ -214,7 +214,7 @@ async def iten_lista_add(request: Request, id):
 async def iten_lista_remove(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "cadastrado")
-    return db.get_lista(email)
+    return await db.get_lista(email)
 
 
 @app.delete("/api/itens/{id}", response_class=HTMLResponse)
@@ -244,7 +244,7 @@ def is_valid(body: dict, qtd: int):
 def sort_chapter():
     import random as r
 
-    chapter = [1, 2, 14, 15, 19, 23, 24, 84, 91, 100, 133, 150][r.randint(0, 9)]
+    chapter = [1, 2, 14, 15, 19, 23, 24, 37, 51, 84, 91, 100, 133, 139, 150][r.randint(0, 14)]
     return chapter
 
 

@@ -5,12 +5,12 @@ con = DB().con
 cur = DB().cur
 
 
-def get_itens(user_email):
-    return get_dados("itens", user_email)
+async def get_itens(user_email):
+    return await get_dados("itens", user_email)
 
 
-def get_iten(id, user_email):
-    return get_dados("itens", user_email, id)
+async def get_iten(id, user_email):
+    return await get_dados("itens", user_email, id)
 
 
 def add_iten(new_iten, user_email):
@@ -21,25 +21,25 @@ def del_iten(id):
     delete("itens", id)
 
 
-def get_lista(user_email):
-    selecionados = get_filtrado("itens", user_email, "selecionado")
-    cadastrados = get_filtrado("itens", user_email, "cadastrado")
+async def get_lista(user_email):
+    selecionados = await get_filtrado("itens", user_email, "selecionado")
+    cadastrados = await get_filtrado("itens", user_email, "cadastrado")
 
     lista = {"selecionados": selecionados, "cadastrados": cadastrados}
 
     return lista
 
 
-def get_compras(user_email):
-    selecionados = get_filtrado("itens", user_email, "selecionado")
-    comprados = get_filtrado("itens", user_email, "comprado")
+async def get_compras(user_email):
+    selecionados = await get_filtrado("itens", user_email, "selecionado")
+    comprados = await get_filtrado("itens", user_email, "comprado")
 
     lista = {"selecionados": selecionados, "comprados": comprados}
 
     return lista
 
 
-def get_dados(tbl, user_email, id=None):
+async def get_dados(tbl, user_email, id=None):
     sql = f"SELECT * FROM {tbl}"
     sql += f" WHERE user_email='{user_email}'"
     sql += f" AND id={id}" if id else ""
@@ -50,7 +50,7 @@ def get_dados(tbl, user_email, id=None):
     return dados
 
 
-def get_filtrado(tbl, user_email, filtro=None):
+async def get_filtrado(tbl, user_email, filtro=None):
     sql = f"SELECT * FROM {tbl}"
     sql += f" WHERE user_email='{user_email}'"
     sql += f" AND status='{filtro}'" if filtro else ""

@@ -14,7 +14,7 @@ def remove(session_id):
     SESSION_DB.pop(session_id, None)
 
 
-def valid(request: Request):
+async def valid(request: Request):
     """Verifica se há uma sessão válida para o usuário"""
 
     session_id = request.cookies.get("Authorization")
@@ -31,7 +31,7 @@ def get_user(request: Request):
     return SESSION_DB[session_id]
 
 
-def get_id(username):
+def get_session(username):
     """Se já existir uma sessão válida para o usuário, retorna o ID"""
     session_id = None
 

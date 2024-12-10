@@ -95,18 +95,6 @@ def init_itens_table(user_email):
 
     itens_iniciais = ler_csv('itens.csv', user_email)
 
-    # itens = [
-    #     ("Carne", "carnes e peixes", "cadastrado", user_email),
-    #     ("Sardinha", "enlatados", "cadastrado", user_email),
-    #     ("Banana", "frutas e verduras", "cadastrado", user_email),
-    #     ("Queijo", "frios", "cadastrado", user_email),
-    #     ("Leite", "laticínios", "cadastrado", user_email),
-    #     ("Açúcar", "produtos básicos", "cadastrado", user_email),
-    #     ("Ovos", "produtos da granja", "cadastrado", user_email),
-    #     ("Sabão em pó", "produtos de limpeza", "cadastrado", user_email),
-    #     ("Suco", "sucos e bebidas", "cadastrado", user_email),
-    # ]
-
     cur.execute(f"DELETE FROM itens WHERE user_email='{user_email}'")
 
     if DB_TYPE == TYPE_PSQL:

@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get("ADMIN_PWD", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
 def authenticated(func):
     @wraps(func)
     async def wrap_func(*args, request, **kwargs):
-        valid(request)
+        await valid(request)
         return await func(*args, request, **kwargs)
 
     return wrap_func
