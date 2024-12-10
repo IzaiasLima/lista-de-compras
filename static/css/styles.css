@@ -23,7 +23,7 @@
 * {
     font-family: Poppins, "Noto Sans", sans-serif;
     color: var(--font-primary);
-
+    font-size: 13pt;
     border: solid 0px transparent;
     box-sizing: border-box;
 }
@@ -32,7 +32,6 @@ body {
     margin: 0;
     padding: 0;
     height: calc(100% + 200px);
-    font-size: 12pt;
     padding-bottom: 200px;
     background-image: var(--bg-color);
     background-repeat: no-repeat;
