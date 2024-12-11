@@ -428,14 +428,8 @@ tr:not(.form):nth-child(even)>td {
     background: rgba(10, 10, 10, 0.1);
 }
 
-
 td:first-child {
     max-width: 80vw;
-    white-space: nowrap;
-}
-
-td.warning:first-child {
-    white-space: unset;
 }
 
 .form td:first-child {
