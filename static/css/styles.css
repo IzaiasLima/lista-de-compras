@@ -152,8 +152,8 @@ body {
 
 #login {
     display: flex;
+    margin: auto;
     flex-direction: column;
-    justify-content: center;
     height: 100%;
     width: calc(250px + 10vw);
 }
@@ -434,6 +434,10 @@ td:first-child {
     white-space: nowrap;
 }
 
+td.warning:first-child {
+    white-space: unset;
+}
+
 .form td:first-child {
     max-width: 100%;
 }
@@ -550,6 +554,7 @@ tr.htmx-swapping td {
 
     div.buttons {
         flex-wrap: wrap;
+        gap: 0;
     }
 
     .w-10,

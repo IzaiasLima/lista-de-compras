@@ -45,7 +45,10 @@ def exists(email: str):
 
     if len(email.strip()) > 0:
         sql = f"SELECT * FROM users WHERE email = '{email}'"
-        cur.execute(sql)
-        user = cur.fetchone()
 
-    return True if user else False
+        try:
+            cur.execute(sql)
+            user = cur.fetchone()
+            return True if user else False
+        except:
+            return False
