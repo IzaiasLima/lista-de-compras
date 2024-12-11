@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" sizes="32x32" href="/app/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
     <title>Lista de Compras - Login</title>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
@@ -18,14 +18,16 @@
             <input type="text" name="user" placeholder="Usuário">
             <input type="password" name="passwd" placeholder="Senha">
 
-            <a class="button" hx-target="this" hx-post="/login" hx-include="#login">Entrar</a>
+            <button hx-target="this" hx-post="/login" hx-include="#login" hx-indicator="#loader">
+                <img width="70px" id="loader" class="htmx-indicator" src="./icons/loader.svg">
+                <span>Entrar</span>
+            </button>
 
             <div class="buttons">
                 <button class="mini secondary" onclick="showToast('Envie e-mail para suporte@izaias.dev')">Esqueci a
                     senha</button>
-                <button class="mini secondary" hx-target="this" hx-post="/cadastrar"
+                <button class="mini secondary" hx-target="this" hx-post="/newuser"
                     hx-include="#login">Cadastrar</button>
-                <!-- <button class="">Cadastrar</button> -->
             </div>
         </div>
 

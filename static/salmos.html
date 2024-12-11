@@ -36,23 +36,21 @@
     </div>
 
     <div class="container">
-        <div class="titles">
-            <h1>Salmo do Dia</h1>
-        </div>
-
         <div class="content">
-            <div hx-ext="client-side-templates" hx-get="/api/capitulo" hx-trigger="load" hx-swap="innerHTML"
+            <div class="w-100" hx-ext="client-side-templates" hx-get="/api/capitulo" hx-trigger="load" hx-swap="innerHTML"
                 mustache-array-template="api-externa">
             </div>
 
             <template id="api-externa">
                 {{#data}}
-                <div hx-ext="client-side-templates"
+                <div class="w-100" hx-ext="client-side-templates"
                     hx-get="https://bible-api.com/Salmos+{{capitulo}}?translation=almeida" hx-trigger="load"
                     hx-swap="innerText" mustache-array-template="salmos">
 
+                    <div class="titles">&nbsp;</div>
+
                     <div class="spinner">
-                        <img width="120px" src="./icons/spinner.svg">&nbsp;
+                        <img src="./icons/spinner.svg">
                     </div>
 
                 </div>
@@ -62,21 +60,23 @@
             <template id="salmos">
                 {{#data}}
 
-                <h2> {{reference}} </h2>
+                <div class="titles">
+                    <h1> {{reference}} </h1>
+                </div>
+
                 {{#verses}}
-                <p style="font-size: 1.3em">{{verse}}. {{text}}</p>
+                <p style="text-align: start; font-size: 1.1em">{{verse}}. {{text}}</p>
                 {{/verses}}
 
                 <footer style="margin-top: 60px; font-size: 1em;">
                     <hr style="width: 100%; border-bottom: solid 1px silver">
-                    <div>
+                    <div style="text-align: start;">
                         <b> <i> Dados obtidos da API: </i> </b>
                         <a href="https://bible-api.com/{{reference}}?translation=almeida">
                             <i>https://bible-api.com/{{reference}}?translation=almeida</i>
                         </a>
                     </div>
                 </footer>
-
                 {{/data}}
 
             </template>

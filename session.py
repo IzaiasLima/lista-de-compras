@@ -23,7 +23,7 @@ async def valid(request: Request):
         raise HTTPException(status_code=401, detail="Usuário não autenticado.")
 
     if session_id not in SESSION_DB:
-        raise HTTPException(status_code=403, detail="Usuário sem acesso.")
+        raise HTTPException(status_code=403, detail="Favor se logar novamente.")
 
 
 def get_user(request: Request):
@@ -33,7 +33,7 @@ def get_user(request: Request):
 
 def get_session(username):
     """Se já existir uma sessão válida para o usuário, retorna o ID"""
-    session_id = None
+    session_id = get_random_id()
 
     try:
         session_id = list(SESSION_DB.keys())[list(SESSION_DB.values()).index(username)]

@@ -51,7 +51,7 @@ async def root():
     return "/app/login.html"
 
 
-@app.post("/cadastrar", response_class=HTMLResponse)
+@app.post("/newuser", response_class=HTMLResponse)
 async def add_user(request:Request, body: dict = Depends(get_body)):
     username: str = body.get("user")
     password: str = body.get("passwd")
@@ -67,7 +67,7 @@ async def add_user(request:Request, body: dict = Depends(get_body)):
     # cadastrar lista inicial de produtos
     db_init.init_itens_table(username)
 
-    return continue_login(username, password)
+    return await continue_login(username, password)
 
 
 @app.post("/newpwd", response_class=HTMLResponse)
@@ -77,7 +77,7 @@ async def new_passwd(request: Request, body: dict = Depends(get_body)):
     oldpwd = body.get("oldpwd")
     newpwd = body.get("newpwd")
 
-    allow = user.is_valid_pwd(username, oldpwd)
+    allow = await user.is_valid_pwd(username, oldpwd)
 
     if len(newpwd.strip()) == 0:
         raise HTTPException(status_code=400, detail="Nova senha inválida.")
@@ -96,11 +96,11 @@ async def new_passwd(request: Request, body: dict = Depends(get_body)):
 async def login(body: dict = Depends(get_body)):
     username = body.get("user")
     password = body.get("passwd")
-    return continue_login(username, password)
+    return await continue_login(username, password)
 
 
-def continue_login(username, password):
-    allow = user.is_valid_pwd(username, password)
+async def continue_login(username, password):
+    allow = await user.is_valid_pwd(username, password)
 
     if not allow:
         raise HTTPException(status_code=401, detail="Usuário/senha não confere.")

@@ -23,7 +23,6 @@
 * {
     font-family: Poppins, "Noto Sans", sans-serif;
     color: var(--font-primary);
-    font-size: 13pt;
     border: solid 0px transparent;
     box-sizing: border-box;
 }
@@ -31,6 +30,7 @@
 body {
     margin: 0;
     padding: 0;
+    font-size: 17pt;
     height: calc(100% + 200px);
     padding-bottom: 200px;
     background-image: var(--bg-color);
@@ -43,8 +43,8 @@ body {
     position: fixed;
     justify-content: space-between;
     width: 100vw;
-    padding: 15px;
-    padding-right: 30px;
+    padding: 10px;
+    padding-right: 20px;
     background: var(--bg-menu);
     border-radius: 16px;
     backdrop-filter: blur(7px);
@@ -59,24 +59,70 @@ body {
 }
 
 .header .material-symbols-outlined {
-    font-size: 2rem;
+    margin-top: 0;
+    font-size: 1.8rem;
 }
 
 .container {
-    position: relative;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    top: 40px;
-    min-height: 90vh;
-    width: 70vw;
-    padding: 30px;
+    min-height: 95vh;
+    width: 75vw;
     margin: auto;
-    align-content: center;
-    justify-content: center;
-    overflow: hidden;
+    justify-content: start;
+    justify-items: center;
 }
 
+.cards,
+.content,
+.dados,
+.titles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 20px;
+}
+
+.content{
+    padding: 0 15px;
+}
+
+.titles {
+    margin-top: 40px;
+}
+
+.cards {
+    width: 60%;
+}
+
+.card {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    height: 14vw;
+    width: 14vw;
+    padding: 15px 7px 0;
+    background-image: var(--bg-card-color);
+    border-radius: 15% 73% 21% 68% / 17% 35% 21% 29%;
+    box-shadow: 4px 4px 4px rgba(128, 128, 128, 0.2);
+}
+
+.card a {
+    text-align: center;
+    font-size: 1.4cqw;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+}
+
+.card a p {
+    margin-top: 0;
+    color: #fff;
+    line-height: 0.95em;
+}
 
 .home {
     display: flex;
@@ -160,6 +206,7 @@ button.swal2-cancel {
 
 .w-100 {
     width: 100%;
+    text-align: center;
 }
 
 .w-10 {
@@ -203,50 +250,31 @@ button.swal2-cancel {
     font-size: 2cqw;
 }
 
-.cards,
-.content,
-.dados,
-.titles {
+.d-flex {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
     width: 100%;
-    gap: 20px;
-}
-
-.cards {
-    width: 60%;
-}
-
-.card {
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
     justify-content: center;
-    height: 14vw;
-    width: 14vw;
-    padding: 15px 7px 0;
-    background-image: var(--bg-card-color);
-    border-radius: 15% 73% 21% 68% / 17% 35% 21% 29%;
-    box-shadow: 4px 4px 4px rgba(128, 128, 128, 0.2);
 }
 
-.card a {
-    text-align: center;
-    font-size: 1.4cqw;
-    font-weight: 600;
-    text-decoration: none;
-    color: #fff;
+
+.htmx-indicator {
+    display: none
 }
 
-.card a p {
-    color: #fff;
-    line-height: 0.9em;
+.htmx-indicator.htmx-request {
+    display: inline;
+}
+
+.htmx-indicator.htmx-request~span {
+    display: none;
 }
 
 .spinner {
-    display: flex;
-    justify-content: center;
+    align-self: center;
+}
+
+.spinner img {
+    width: 120px;
 }
 
 .spacer {
@@ -303,11 +331,16 @@ a.button {
     margin-bottom: 10px;
     padding: 0 1rem;
     color: var(--btn-font-primary);
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
     text-align: center;
     background-color: var(--btn-primary);
     border-radius: var(--border-radius);
+}
+
+button span, a.button span {
+    font-size: 1.3em;
+    color: var(--btn-font-primary);
 }
 
 a.button {
@@ -354,6 +387,10 @@ div.buttons {
     flex-wrap: nowrap;
     justify-content: space-evenly;
     gap: 1em;
+}
+
+div.buttons a {
+    line-height: 0.95em;
 }
 
 div.icon {
@@ -463,10 +500,9 @@ tr.htmx-swapping td {
 @media (max-width: 992px) and (orientation: portrait) {
     .container {
         min-height: 70vh;
-        width: 95vw;
+        width: 100vw;
         padding: 5px;
     }
-
 
     .header {
         padding: 10px;
@@ -508,7 +544,7 @@ tr.htmx-swapping td {
     }
 
     .big-icon {
-        padding: 10px;
+        padding: 0 10px;
         font-size: 10cqw;
     }
 
@@ -542,7 +578,6 @@ tr.htmx-swapping td {
     tr.form>td {
         display: block;
         padding-right: 0;
-
     }
 
     th.m-hidden,
@@ -551,7 +586,6 @@ tr.htmx-swapping td {
     }
 
     td.icon div {
-        justify-content: flex-start;
         padding-left: 0;
     }
 }

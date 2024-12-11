@@ -26,6 +26,7 @@ document.addEventListener('htmx:responseError', evt => {
     showToast(error.detail);
 });
 
+
 function showToast(msg) {
     const elm = document.getElementById('toast');
     elm.innerHTML = msg;

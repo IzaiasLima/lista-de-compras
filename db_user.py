@@ -26,13 +26,18 @@ async def update_pwd(email, newpwd):
     con.commit()
 
 
-def is_valid_pwd(email, pwd):
+async def is_valid_pwd(email, pwd):
     pwd_crypto = hashlib.sha256(pwd.encode("utf-8")).hexdigest()
 
     sql = f"SELECT * FROM users WHERE email = '{email}' AND passwd = '{pwd_crypto}'"
-    cur.execute(sql)
-    user = cur.fetchone()
-    return True if user else False
+
+    try:
+        cur.execute(sql)
+        user = cur.fetchone()
+        return True if user else False
+    except:
+        cur.close()
+        return False
 
 
 def exists(email: str):

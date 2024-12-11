@@ -26,7 +26,6 @@ async def get_lista(user_email):
     cadastrados = await get_filtrado("itens", user_email, "cadastrado")
 
     lista = {"selecionados": selecionados, "cadastrados": cadastrados}
-
     return lista
 
 
@@ -35,7 +34,6 @@ async def get_compras(user_email):
     comprados = await get_filtrado("itens", user_email, "comprado")
 
     lista = {"selecionados": selecionados, "comprados": comprados}
-
     return lista
 
 
@@ -44,10 +42,15 @@ async def get_dados(tbl, user_email, id=None):
     sql += f" WHERE user_email='{user_email}'"
     sql += f" AND id={id}" if id else ""
     sql += " ORDER BY 3,2;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    dados = [dict(row) for row in rows]
-    return dados
+
+    try:
+        cur.execute(sql)
+        rows = cur.fetchall()
+        dados = [dict(row) for row in rows]
+        return dados
+    except:
+        cur.close()
+        return []
 
 
 async def get_filtrado(tbl, user_email, filtro=None):
@@ -55,10 +58,15 @@ async def get_filtrado(tbl, user_email, filtro=None):
     sql += f" WHERE user_email='{user_email}'"
     sql += f" AND status='{filtro}'" if filtro else ""
     sql += " ORDER BY 3,2;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    dados = [dict(row) for row in rows]
-    return dados
+
+    try:
+        cur.execute(sql)
+        rows = cur.fetchall()
+        dados = [dict(row) for row in rows]
+        return dados
+    except:
+        cur.close()
+        return []
 
 
 def add(table, user_email, dados: dict):
