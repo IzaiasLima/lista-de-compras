@@ -67,7 +67,7 @@ function incFontSize() {
 }
 
 function fontSize(inc) {
-    const body = document.getElementsByTagName('body')[0];
+    const body = document.querySelector(':root');
     const style = window.getComputedStyle(body, null).getPropertyValue('font-size');
     const fontSize = parseFloat(style);
     body.style.fontSize = (fontSize + inc) + 'px';
