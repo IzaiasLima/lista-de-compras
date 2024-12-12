@@ -34,7 +34,8 @@
         </div>
 
         <div class="content" hx-ext="client-side-templates">
-            <span>Lista geral. Inclua apenas os itens que você compra regularmente; exclua os que você raramente compra.</span>
+            <span>Lista geral dos produtos. Inclua apenas os itens que você compra regularmente. 
+                Exclua aqueles que você raramente compra.</span>
             <div class="w-100" hx-get="/api/itens" hx-trigger="load" hx-swap="innerHTML"
                 mustache-array-template="template">
                 <!-- Os dados vão ser exibidos aqui. -->
@@ -108,6 +109,8 @@
     <script src="https://unpkg.com/mustache@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/functions.js"></script>
+    <script src="./js/auth.js"></script>
+    
 </body>
 
 </html>

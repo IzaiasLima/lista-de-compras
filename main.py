@@ -91,7 +91,6 @@ async def new_passwd(request: Request, body: dict = Depends(get_body)):
     response = HTMLResponse(URL)
     return response
 
-
 @app.post("/login", response_class=HTMLResponse)
 async def login(body: dict = Depends(get_body)):
     username = body.get("user")
@@ -113,8 +112,10 @@ async def continue_login(username, password):
     session.add(session_id, username)
 
     URL = "<script>window.location.href='/app/home.html'</script>"
+
     response = HTMLResponse(URL)
     response.set_cookie(key="Authorization", value=session_id)
+
     return response
 
 

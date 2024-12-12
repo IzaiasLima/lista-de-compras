@@ -250,12 +250,9 @@ button.swal2-cancel {
     font-size: 2cqw;
 }
 
-.d-flex {
-    display: flex;
-    width: 100%;
-    justify-content: center;
+#loader {
+    margin-top: -12px;
 }
-
 
 .htmx-indicator {
     display: none
