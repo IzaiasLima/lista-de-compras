@@ -104,12 +104,8 @@ async def continue_login(username, password):
     if not allow:
         raise HTTPException(status_code=401, detail="Usuário/senha não confere.")
 
-    session_id = session.get_session(username)
-
-    if not session_id:
-        session_id = session.get_random_id()
-
-    session.add(session_id, username)
+    session_id = session.get_random_id()
+    await user.set_session(session_id, username)
 
     URL = "<script>window.location.href='/app/home.html'</script>"
 
@@ -122,7 +118,7 @@ async def continue_login(username, password):
 @app.get("/logout")
 async def session_logout(req: Request):
     session_id = req.cookies.get("Authorization")
-    session.remove(session_id)
+    await session.remove(session_id)
 
     URL = "<script>window.location.href='/app/login.html'</script>"
     response = HTMLResponse(URL)
@@ -140,14 +136,16 @@ async def psalm_of_day():
 @app.get("/api/itens", response_class=JSONResponse)
 @auth.authenticated
 async def get_itens_list(request: Request):
-    dados = await db.get_itens(session.get_user(request))
+    user_email = session.get_user(request)
+    dados = await db.get_itens(user_email)
     return dados
 
 
 @app.get("/api/itens/{id}", response_class=JSONResponse)
 @auth.authenticated
 async def get_iten(id, request: Request):
-    dados = await db.get_iten(id, session.get_user(request))
+    email = session.get_user(request)
+    dados = await db.get_iten(id, email)
     return dados
 
 
@@ -166,7 +164,8 @@ async def add_iten(request: Request, body=Depends(get_body)):
 @app.get("/api/compras", response_class=JSONResponse)
 @auth.authenticated
 async def get_shopping_list(request: Request):
-    dados = await db.get_compras(session.get_user(request))
+    email = session.get_user(request)
+    dados = await db.get_compras(email)
     return dados
 
 
@@ -191,7 +190,8 @@ async def iten_car_remove(request: Request, id):
 @app.get("/api/lista", response_class=JSONResponse)
 @auth.authenticated
 async def get_all_itens_list(request: Request):
-    return await db.get_lista(session.get_user(request))
+    email = session.get_user(request)
+    return await db.get_lista(email)
 
 
 @app.get("/api/lista/all/reset", response_class=JSONResponse)
@@ -256,5 +256,6 @@ def sort_chapter():
 @app.delete("/reset", response_class=JSONResponse)
 @auth.authenticated
 async def db_reset(request: Request):
-    db_init.init_itens_table(session.get_user(request))
+    email = session.get_user(request)
+    db_init.init_itens_table(email)
     return

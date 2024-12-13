@@ -55,7 +55,8 @@ def create_tables():
             CREATE TABLE IF NOT EXISTS users
             (   {PRIMARY_KEY},
                 email text,
-                passwd text
+                passwd text,
+                session text
             )
         """
     )
@@ -78,9 +79,9 @@ def init_user_table():
     cur.execute("DELETE FROM users")
 
     if DB_TYPE == TYPE_PSQL:
-        cur.executemany("INSERT INTO users VALUES (DEFAULT, %s,%s)", users)
+        cur.executemany("INSERT INTO users VALUES (DEFAULT, %s,%s,DEFAULT)", users)
     else:
-        cur.executemany("INSERT INTO users VALUES (NULL,?,?)", users)
+        cur.executemany("INSERT INTO users VALUES (NULL,?,?,NULL)", users)
 
     con.commit()
 
