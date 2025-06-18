@@ -171,7 +171,7 @@ async def get_shopping_list(request: Request):
 
 @app.patch("/api/compras/{id}/adicionar", response_class=JSONResponse)
 @auth.authenticated
-async def iten_car_add(request: Request, id):
+async def iten_shopp_cart_add(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "comprado")
     dados = await db.get_compras(email)
@@ -180,7 +180,7 @@ async def iten_car_add(request: Request, id):
 
 @app.patch("/api/compras/{id}/remover", response_class=JSONResponse)
 @auth.authenticated
-async def iten_car_remove(request: Request, id):
+async def iten_shopp_cart_remove(request: Request, id):
     email = session.get_user(request)
     db.patch_status(id, email, "selecionado")
     dados = await db.get_compras(email)

@@ -73,6 +73,23 @@
                             </tr>
                             <!-- {{/selecionados}} -->
 
+                            <!-- {{#comprados}} -->
+                            <tr>
+                                <td title="{{id}}" class="u-case">{{nome}}</td>
+                                <td data-th="Categoria" class="m-hidden fl-case">{{categoria}}</td>
+                                <td data-th="Situação" class="m-hidden fl-case">{{status}}</td>
+                                <td class="icon">
+                                    <div class="icon">
+                                        <a title="Adicionar este item à lista" hx-target="closest table"
+                                            hx-swap="outerHTML" hx-patch="/api/lista/{{id}}/adicionar">
+                                            <i class="material-symbols-outlined small-icon success">playlist_add</i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- {{/comprados}} -->
+
+
                             <!-- {{#cadastrados}} -->
                             <tr>
                                 <td title="{{id}}" class="u-case">{{nome}}</td>
@@ -124,7 +141,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/functions.js"></script>
     <script src="./js/auth.js"></script>
-    
+
 </body>
 
 </html>

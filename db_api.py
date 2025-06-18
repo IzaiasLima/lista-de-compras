@@ -23,9 +23,11 @@ def del_iten(id):
 
 async def get_lista(user_email):
     selecionados = await get_filtrado("itens", user_email, "selecionado")
+    comprados = await get_filtrado("itens", user_email, "comprado")
     cadastrados = await get_filtrado("itens", user_email, "cadastrado")
 
-    lista = {"selecionados": selecionados, "cadastrados": cadastrados}
+    lista = {"selecionados": selecionados, "comprados": comprados, "cadastrados": cadastrados}
+
     return lista
 
 
