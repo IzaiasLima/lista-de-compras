@@ -1,4 +1,11 @@
 
+// Ativa o Service Worker que permite e site ser instalado como APP (PWA)
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/pages/js/service-worker.js')
+        .then(reg => console.log('Service Worker registrado'))
+        .catch(err => console.log('Erro:', err));
+}
+
 document.addEventListener(
     "htmx:confirm",
     function (evt) {
@@ -26,7 +33,19 @@ document.addEventListener('htmx:responseError', evt => {
     showToast(error.detail);
 });
 
+// ocultar botoes flutuantes quando os botões fixos estiverem visíveis
+const floatingButtons = document.querySelector('.floating-buttons');
+const fixedButtons = document.querySelector('.buttons.spacer');
 
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        floatingButtons.style.display = entry.isIntersecting ? 'none' : 'flex';
+    });
+});
+
+observer.observe(fixedButtons);
+
+// exibir mensagem de erro quando ocorrer um erro na requisição
 function showToast(msg) {
     const elm = document.getElementById('toast');
     elm.innerHTML = msg;

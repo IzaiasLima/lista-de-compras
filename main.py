@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
 
 import json
 import urllib.parse as html
-
+import uvicorn
 import static.fragments.html_add as add
 import db_api as db
 import db_user as user
@@ -18,7 +18,7 @@ ERR_MSG = "Todos os campos precisam ser preenchidos!"
 
 app = FastAPI(
     title="Lista de Compras",
-    version="0.0.1",
+    version="1.0.1",
     summary="Lista de compras simples para um usuário.",
 )
 
@@ -52,7 +52,7 @@ async def root():
 
 
 @app.post("/newuser", response_class=HTMLResponse)
-async def add_user(request:Request, body: dict = Depends(get_body)):
+async def add_user(request: Request, body: dict = Depends(get_body)):
     username: str = body.get("user")
     password: str = body.get("passwd")
 
@@ -63,7 +63,7 @@ async def add_user(request:Request, body: dict = Depends(get_body)):
         raise HTTPException(status_code=400, detail="Usuário informado já existe.")
 
     await user.add(username, password)
-    
+
     # cadastrar lista inicial de produtos
     db_init.init_itens_table(username)
 
@@ -90,6 +90,7 @@ async def new_passwd(request: Request, body: dict = Depends(get_body)):
     URL = "<script>window.location.href='/app/home.html'</script>"
     response = HTMLResponse(URL)
     return response
+
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(body: dict = Depends(get_body)):
@@ -127,6 +128,21 @@ async def session_logout(req: Request):
     return response
 
 
+@app.post("/renewpwd/{username}/{newpwd}")
+@auth.administrator
+async def renew_passwd(username, newpwd, request: Request):
+
+    if user.exists(username) == False:
+        raise HTTPException(status_code=400, detail="Usuário informado não existe.")
+
+    if len(newpwd.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Nova senha inválida.")
+
+    await user.update_pwd(username, newpwd)
+
+    return HTMLResponse(f"Usuário {username}: senha atualizada com sucesso!")
+
+
 @app.get("/api/capitulo", response_class=JSONResponse)
 async def psalm_of_day():
     res = {"capitulo": sort_chapter()}
@@ -138,14 +154,6 @@ async def psalm_of_day():
 async def get_itens_list(request: Request):
     user_email = session.get_user(request)
     dados = await db.get_itens(user_email)
-    return dados
-
-
-@app.get("/api/itens/{id}", response_class=JSONResponse)
-@auth.authenticated
-async def get_iten(id, request: Request):
-    email = session.get_user(request)
-    dados = await db.get_iten(id, email)
     return dados
 
 
@@ -166,6 +174,14 @@ async def add_iten(request: Request, body=Depends(get_body)):
 async def get_shopping_list(request: Request):
     email = session.get_user(request)
     dados = await db.get_compras(email)
+    return dados
+
+
+@app.get("/api/itens/{id}", response_class=JSONResponse)
+@auth.authenticated
+async def get_iten(id, request: Request):
+    email = session.get_user(request)
+    dados = await db.get_iten(id, email)
     return dados
 
 
@@ -245,7 +261,9 @@ def is_valid(body: dict, qtd: int):
 def sort_chapter():
     import random as r
 
-    chapter = [1, 2, 14, 15, 19, 23, 24, 37, 51, 84, 91, 100, 133, 139, 150][r.randint(0, 14)]
+    chapter = [1, 2, 14, 15, 19, 23, 24, 37, 51, 84, 91, 100, 133, 139, 150][
+        r.randint(0, 14)
+    ]
     return chapter
 
 
@@ -259,3 +277,7 @@ async def db_reset(request: Request):
     email = session.get_user(request)
     db_init.init_itens_table(email)
     return
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

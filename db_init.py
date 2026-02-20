@@ -94,12 +94,14 @@ def init_itens_table(user_email):
     con = DB().con
     cur = DB().cur
 
-    itens_iniciais = ler_csv('itens.csv', user_email)
+    itens_iniciais = ler_csv("itens.csv", user_email)
 
     cur.execute(f"DELETE FROM itens WHERE user_email='{user_email}'")
 
     if DB_TYPE == TYPE_PSQL:
-        cur.executemany("INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens_iniciais)
+        cur.executemany(
+            "INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens_iniciais
+        )
 
     else:
         cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens_iniciais)

@@ -85,7 +85,7 @@ body {
     gap: 20px;
 }
 
-.content{
+.content {
     padding: 0 15px;
 }
 
@@ -321,6 +321,43 @@ a:hover {
     cursor: pointer;
 }
 
+.floating-buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .fab {
+        width: 56px;
+        height: 56px;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-image: var(--bg-card-color);
+        border-radius: 50%;
+        box-shadow: 4px 4px 4px rgba(128, 128, 128, 0.2);
+        transition: all 0.3s ease;
+        text-decoration: none;
+
+
+        .material-symbols-outlined {
+            font-size: 2rem;
+            color: var(--btn-font-primary);
+        }
+    }
+
+    .fab:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        transform: scale(1.1);
+    }
+
+}
+
 button,
 a.button {
     height: 3rem;
@@ -335,7 +372,8 @@ a.button {
     border-radius: var(--border-radius);
 }
 
-button span, a.button span {
+button span,
+a.button span {
     font-size: 1.3em;
     color: var(--btn-font-primary);
 }
@@ -468,6 +506,7 @@ tr.htmx-swapping td {
 }
 
 @media (max-width: 992px) {
+
     select,
     input,
     button,

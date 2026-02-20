@@ -1,82 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Compras</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lista de Compras</title>
+        <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <link rel="stylesheet" href="./css/styles.css">
+    </head>
 
-<body>
-    <div class="header">
-        <span>&nbsp;</span>
-        <div>
-            <a title="Salmo do dia" href="/app/salmos.html"">
-                <i class="material-symbols-outlined"> auto_stories </i>
-            </a>
-            <a title="Trocar a senha" href="/app/newpwd.html"">
-                <i class="material-symbols-outlined"> account_circle </i>
-            </a>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="titles">
-            <h1>Lista de Compras</h1>
+    <body>
+        <div class="header">
+            <span>&nbsp;</span>
+            <div>
+                <a title="Salmo do dia" href="https://biblia.izaias.com.br"">
+                <i class=" material-symbols-outlined"> auto_stories </i>
+                </a>
+                <a title="Trocar a senha" href="/app/newpwd.html"">
+                <i class=" material-symbols-outlined"> account_circle </i>
+                </a>
+            </div>
         </div>
 
-        <div class="home">
-            <div class="cards">
-                <div class="card">
-                    <a href="/app/compras.html">
-                        <i class="material-symbols-outlined big-icon"> shopping_cart </i>
-                        <p>Fazer Compras</p>
-                    </a>
-                </div>
+        <div class="container">
+            <div class="titles">
+                <h1>Lista de Compras</h1>
+            </div>
 
-                <div class="card">
-                    <a href="/app/lista.html">
-                        <i class="material-symbols-outlined big-icon"> add_shopping_cart </i>
-                        <p>Preparar Lista</p>
-                    </a>
-                </div>
-                <div class="card">
-                    <a href="/app/cadastrar.html">
-                        <i class="material-symbols-outlined big-icon"> docs_add_on </i>
-                        <p>Cadastrar Itens</p>
-                    </a>
-                </div>
+            <div class="home">
+                <div class="cards">
+                    <div class="card">
+                        <a href="/app/compras.html">
+                            <i class="material-symbols-outlined big-icon"> shopping_cart </i>
+                            <p>Fazer Compras</p>
+                        </a>
+                    </div>
 
-                <!-- <div class="card">
+                    <div class="card">
+                        <a href="/app/lista.html">
+                            <i class="material-symbols-outlined big-icon"> add_shopping_cart </i>
+                            <p>Preparar Lista</p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a href="/app/cadastrar.html">
+                            <i class="material-symbols-outlined big-icon"> docs_add_on </i>
+                            <p>Cadastrar Itens</p>
+                        </a>
+                    </div>
+
+                    <!-- <div class="card">
                     <a href="/app/salmos.html">
                         <i class="material-symbols-outlined big-icon"> menu_book </i>
                         <p>Salmo do Dia</p>
                     </a>
                 </div> -->
 
-                <div class="card">
-                    <a href="/logout">
-                        <i class="material-symbols-outlined big-icon"> logout </i>
-                        <p>Sair do Sistema</p>
-                    </a>
+                    <div class="card">
+                        <a href="/logout">
+                            <i class="material-symbols-outlined big-icon"> logout </i>
+                            <p>Sair do Sistema</p>
+                        </a>
+                    </div>
                 </div>
             </div>
+
+            <div id="toast" class="animate__animated animate__faster">
+                <!-- Exibir mensagem de erro -->
+            </div>
+
+            <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+            <script src="./js/functions.js"></script>
+            <script src="./js/auth.js"></script>
+
         </div>
-
-        <div id="toast" class="animate__animated animate__faster">
-            <!-- Exibir mensagem de erro -->
-        </div>
-
-        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-        <script src="./js/functions.js"></script>
-        <script src="./js/auth.js"></script>
-
-    </div>
-</body>
+    </body>
 
 </html>
