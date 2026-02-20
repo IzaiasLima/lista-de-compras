@@ -15,7 +15,13 @@
 
     <body>
         <div class="container">
+
             <div id="login">
+
+                <div class="spinner hide">
+                    <img src="./icons/spinner.svg">
+                </div>
+
                 <input type="text" name="user" placeholder="Usuário">
                 <input type="password" name="passwd" placeholder="Senha">
 
@@ -27,7 +33,7 @@
                 <div class="buttons">
                     <button class="mini secondary" onclick="showToast('Envie e-mail para suporte@izaias.dev')">Esqueci a
                         senha</button>
-                    <button class="mini secondary" hx-target="this" hx-post="/newuser"
+                    <button class="mini secondary" hx-target="this" hx-post="/newuser" onclick="showSpinner()"
                         hx-include="#login">Cadastrar</button>
                 </div>
             </div>

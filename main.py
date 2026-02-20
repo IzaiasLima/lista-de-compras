@@ -53,7 +53,7 @@ async def root():
 
 @app.post("/newuser", response_class=HTMLResponse)
 async def add_user(request: Request, body: dict = Depends(get_body)):
-    username: str = body.get("user").strip().lcower()
+    username: str = body.get("user").strip().lower()
     password: str = body.get("passwd").strip().lower()
 
     if len(username.strip()) == 0 or len(password.strip()) == 0:

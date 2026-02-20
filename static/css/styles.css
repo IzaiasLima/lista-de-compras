@@ -270,6 +270,15 @@ button.swal2-cancel {
 
 .spinner {
     align-self: center;
+
+}
+
+.spinner.hide {
+    display: none;
+}
+
+.spinner.show {
+    display: inline;
 }
 
 .spinner img {

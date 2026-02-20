@@ -51,7 +51,10 @@ function showToast(msg) {
     const elm = document.getElementById('toast');
     elm.innerHTML = msg;
     elm.classList.add('show', 'animate__fadeInUp');
-    setTimeout(function () { elm.classList.remove('show', 'animate__fadeInUp') }, 3000);
+    setTimeout(function () {
+        hideSpinner();
+        elm.classList.remove('show', 'animate__fadeInUp')
+    }, 3000);
 }
 
 function showDetail() {
@@ -91,4 +94,16 @@ function fontSize(inc) {
     const style = window.getComputedStyle(body, null).getPropertyValue('font-size');
     const fontSize = parseFloat(style);
     body.style.fontSize = (fontSize + inc) + 'px';
+}
+
+function showSpinner() {
+    const spinner = document.querySelector('.spinner');
+    spinner.classList.remove('hide');
+    spinner.classList.add('show');
+}
+
+function hideSpinner() {
+    const spinner = document.querySelector('.spinner');
+    spinner.classList.remove('show');
+    spinner.classList.add('hide');
 }
