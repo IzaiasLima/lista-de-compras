@@ -1,147 +1,149 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Compras - Preparar Lista</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lista de Compras - Preparar Lista</title>
+        <link rel="manifest" href="/app/js/manifest.json">
+        <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <link rel="stylesheet" href="./css/styles.css">
+    </head>
 
-<body>
-    <div class="header">
-        <a href="/app/home.html">
-            <i class="material-symbols-outlined">arrow_back</i>
-        </a>
-        <div>
-            <a onclick="decFontSize()">
-                <i class="material-symbols-outlined"> text_decrease </i>
+    <body>
+        <div class="header">
+            <a href="/app/home.html">
+                <i class="material-symbols-outlined">arrow_back</i>
             </a>
-            <a onclick="incFontSize()">
-                <i class="material-symbols-outlined"> text_increase </i>
-            </a>
-        </div>
-    </div>
-
-    <div class="container">
-
-        <div class="titles">
-            <h1>Preparar Lista de Compras</h1>
+            <div>
+                <a onclick="decFontSize()">
+                    <i class="material-symbols-outlined"> text_decrease </i>
+                </a>
+                <a onclick="incFontSize()">
+                    <i class="material-symbols-outlined"> text_increase </i>
+                </a>
+            </div>
         </div>
 
-        <div class="content" hx-ext="client-side-templates">
-            <div id="lista" class="w-100" hx-get="/api/lista" hx-trigger="load" hx-swap="innerHTML"
-                mustache-array-template="template">
-                <!-- Os dados vão ser exibidos aqui. -->
+        <div class="container">
 
-                <div class="spinner">
-                    <img src="./icons/spinner.svg">
+            <div class="titles">
+                <h1>Preparar Lista de Compras</h1>
+            </div>
+
+            <div class="content" hx-ext="client-side-templates">
+                <div id="lista" class="w-100" hx-get="/api/lista" hx-trigger="load" hx-swap="innerHTML"
+                    mustache-array-template="template">
+                    <!-- Os dados vão ser exibidos aqui. -->
+
+                    <div class="spinner">
+                        <img src="./icons/spinner.svg">
+                    </div>
+                </div>
+
+                <template id="template">
+                    <section id="itens">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome do item</th>
+                                    <th class="m-hidden">Categoria</th>
+                                    <th class="m-hidden">Situação</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <!-- {{#data}} -->
+                                <!-- {{#selecionados}} -->
+                                <tr>
+                                    <td title="{{id}}" class="success u-case">{{nome}}</td>
+                                    <td data-th="Categoria" class="success m-hidden fl-case">{{categoria}}</td>
+                                    <td data-th="Situação" class="success m-hidden fl-case">{{status}}</td>
+                                    <td>
+                                        <div class="icon">
+                                            <a title="Excluir este item da lista" hx-target="closest table"
+                                                hx-swap="outerHTML" hx-patch="/api/lista/{{id}}/remover">
+                                                <i
+                                                    class="material-symbols-outlined small-icon warning">playlist_remove</i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- {{/selecionados}} -->
+
+                                <!-- {{#comprados}} -->
+                                <tr>
+                                    <td title="{{id}}" class="u-case">{{nome}}</td>
+                                    <td data-th="Categoria" class="m-hidden fl-case">{{categoria}}</td>
+                                    <td data-th="Situação" class="m-hidden fl-case">{{status}}</td>
+                                    <td class="icon">
+                                        <div class="icon">
+                                            <a title="Adicionar este item à lista" hx-target="closest table"
+                                                hx-swap="outerHTML" hx-patch="/api/lista/{{id}}/adicionar">
+                                                <i class="material-symbols-outlined small-icon success">playlist_add</i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- {{/comprados}} -->
+
+
+                                <!-- {{#cadastrados}} -->
+                                <tr>
+                                    <td title="{{id}}" class="u-case">{{nome}}</td>
+                                    <td data-th="Categoria" class="m-hidden fl-case">{{categoria}}</td>
+                                    <td data-th="Situação" class="m-hidden fl-case">{{status}}</td>
+                                    <td class="icon">
+                                        <div class="icon">
+                                            <a title="Adicionar este item à lista" hx-target="closest table"
+                                                hx-swap="outerHTML" hx-patch="/api/lista/{{id}}/adicionar">
+                                                <i class="material-symbols-outlined small-icon success">playlist_add</i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- {{/cadastrados}} -->
+
+                                <!-- {{^cadastrados}} -->
+                                <tr>
+                                    <td class="warning" colspan="5">Não há itens para colocar na lista.</td>
+                                </tr>
+                                <!-- {{/cadastrados}} -->
+                                <!-- {{/data}} -->
+                            </tbody>
+                        </table>
+
+                    </section>
+                </template>
+
+                <div class="buttons spacer" hx-ext="client-side-templates">
+                    <a class="button" hx-target="previous #lista" hx-trigger="click" hx-confirm="todos os itens"
+                        mustache-array-template="template" hx-get="/api/lista/all/reset">
+                        Refazer a lista
+                    </a>
+                    <a class="button" href="/app/compras.html">Fazer compras</a>
+                </div>
+
+                <div id="toast" class="animate__animated animate__faster">
+                    <!-- Exibir mensagem de erro -->
                 </div>
             </div>
-
-            <template id="template">
-                <section id="itens">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome do item</th>
-                                <th class="m-hidden">Categoria</th>
-                                <th class="m-hidden">Situação</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <!-- {{#data}} -->
-                            <!-- {{#selecionados}} -->
-                            <tr>
-                                <td title="{{id}}" class="success u-case">{{nome}}</td>
-                                <td data-th="Categoria" class="success m-hidden fl-case">{{categoria}}</td>
-                                <td data-th="Situação" class="success m-hidden fl-case">{{status}}</td>
-                                <td>
-                                    <div class="icon">
-                                        <a title="Excluir este item da lista" hx-target="closest table"
-                                            hx-swap="outerHTML" hx-patch="/api/lista/{{id}}/remover">
-                                            <i class="material-symbols-outlined small-icon warning">playlist_remove</i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- {{/selecionados}} -->
-
-                            <!-- {{#comprados}} -->
-                            <tr>
-                                <td title="{{id}}" class="u-case">{{nome}}</td>
-                                <td data-th="Categoria" class="m-hidden fl-case">{{categoria}}</td>
-                                <td data-th="Situação" class="m-hidden fl-case">{{status}}</td>
-                                <td class="icon">
-                                    <div class="icon">
-                                        <a title="Adicionar este item à lista" hx-target="closest table"
-                                            hx-swap="outerHTML" hx-patch="/api/lista/{{id}}/adicionar">
-                                            <i class="material-symbols-outlined small-icon success">playlist_add</i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- {{/comprados}} -->
-
-
-                            <!-- {{#cadastrados}} -->
-                            <tr>
-                                <td title="{{id}}" class="u-case">{{nome}}</td>
-                                <td data-th="Categoria" class="m-hidden fl-case">{{categoria}}</td>
-                                <td data-th="Situação" class="m-hidden fl-case">{{status}}</td>
-                                <td class="icon">
-                                    <div class="icon">
-                                        <a title="Adicionar este item à lista" hx-target="closest table"
-                                            hx-swap="outerHTML" hx-patch="/api/lista/{{id}}/adicionar">
-                                            <i class="material-symbols-outlined small-icon success">playlist_add</i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- {{/cadastrados}} -->
-
-                            <!-- {{^cadastrados}} -->
-                            <tr>
-                                <td class="warning" colspan="5">Não há itens para colocar na lista.</td>
-                            </tr>
-                            <!-- {{/cadastrados}} -->
-                            <!-- {{/data}} -->
-                        </tbody>
-                    </table>
-
-                </section>
-            </template>
-
-            <div class="buttons spacer" hx-ext="client-side-templates">
-                <a class="button" hx-target="previous #lista" hx-trigger="click" hx-confirm="todos os itens"
-                    mustache-array-template="template" hx-get="/api/lista/all/reset">
-                    Refazer a lista
-                </a>
-                <a class="button" href="/app/compras.html">Fazer compras</a>
-            </div>
-
-            <div id="toast" class="animate__animated animate__faster">
-                <!-- Exibir mensagem de erro -->
-            </div>
         </div>
-    </div>
 
-    <script src="https://unpkg.com/htmx.org@1.9.10"
-        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-        crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
-    <script src="https://unpkg.com/mustache@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="./js/functions.js"></script>
-    <script src="./js/auth.js"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.10"
+            integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+            crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js"></script>
+        <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+        <script src="https://unpkg.com/mustache@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="./js/functions.js"></script>
+        <script src="./js/auth.js"></script>
 
-</body>
+    </body>
 
 </html>

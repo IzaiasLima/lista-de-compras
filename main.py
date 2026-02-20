@@ -18,7 +18,7 @@ ERR_MSG = "Todos os campos precisam ser preenchidos!"
 
 app = FastAPI(
     title="Lista de Compras",
-    version="1.0.1",
+    version="1.1.3",
     summary="Lista de compras simples para um usuário.",
 )
 
@@ -143,12 +143,6 @@ async def renew_passwd(username, newpwd, request: Request):
     return HTMLResponse(f"Usuário {username}: senha atualizada com sucesso!")
 
 
-@app.get("/api/capitulo", response_class=JSONResponse)
-async def psalm_of_day():
-    res = {"capitulo": sort_chapter()}
-    return res
-
-
 @app.get("/api/itens", response_class=JSONResponse)
 @auth.authenticated
 async def get_itens_list(request: Request):
@@ -256,15 +250,6 @@ async def get_add_iten_template(request: Request):
 
 def is_valid(body: dict, qtd: int):
     return sum([1 if v else 0 for _, v in body.items()]) == qtd
-
-
-def sort_chapter():
-    import random as r
-
-    chapter = [1, 2, 14, 15, 19, 23, 24, 37, 51, 84, 91, 100, 133, 139, 150][
-        r.randint(0, 14)
-    ]
-    return chapter
 
 
 # --------------------------------------- #
