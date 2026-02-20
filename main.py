@@ -53,8 +53,8 @@ async def root():
 
 @app.post("/newuser", response_class=HTMLResponse)
 async def add_user(request: Request, body: dict = Depends(get_body)):
-    username: str = body.get("user")
-    password: str = body.get("passwd")
+    username: str = body.get("user").strip().lcower()
+    password: str = body.get("passwd").strip().lower()
 
     if len(username.strip()) == 0 or len(password.strip()) == 0:
         raise HTTPException(status_code=400, detail="Usuário ou senha inválidos.")
@@ -74,8 +74,8 @@ async def add_user(request: Request, body: dict = Depends(get_body)):
 @auth.authenticated
 async def new_passwd(request: Request, body: dict = Depends(get_body)):
     username = session.get_user(request)
-    oldpwd = body.get("oldpwd")
-    newpwd = body.get("newpwd")
+    oldpwd = body.get("oldpwd").strip().lower()
+    newpwd = body.get("newpwd").strip().lower()
 
     allow = await user.is_valid_pwd(username, oldpwd)
 
@@ -94,8 +94,8 @@ async def new_passwd(request: Request, body: dict = Depends(get_body)):
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(body: dict = Depends(get_body)):
-    username = body.get("user")
-    password = body.get("passwd")
+    username = body.get("user").strip().lower()
+    password = body.get("passwd").strip().lower()
     return await continue_login(username, password)
 
 

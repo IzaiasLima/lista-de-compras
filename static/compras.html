@@ -66,7 +66,7 @@
                                         <div class="icon">
                                             <a title="Colocar o item no carrinho" hx-target="closest table"
                                                 hx-swap="outerHTML" hx-patch="/api/compras/{{id}}/adicionar">
-                                                <span class="material-symbols-outlined small-icon success">
+                                                <span class="material-symbols-outlined small-icon">
                                                     add_shopping_cart
                                                 </span>
                                             </a>
@@ -77,9 +77,9 @@
 
                                 <!-- {{#comprados}} -->
                                 <tr>
-                                    <td title="{{id}}" class="success u-case">{{nome}}</td>
-                                    <td data-th="Categoria" class="success m-hidden fl-case">{{categoria}}</td>
-                                    <td data-th="Situação" class="success m-hidden fl-case">{{status}}</td>
+                                    <td title="{{id}}" class="comprado u-case">{{nome}}</td>
+                                    <td data-th="Categoria" class="comprado m-hidden fl-case">{{categoria}}</td>
+                                    <td data-th="Situação" class="comprado m-hidden fl-case">{{status}}</td>
                                     <td>
                                         <div class="icon">
                                             <a title="Tirar o item do carrinho" hx-target="closest table"

@@ -96,16 +96,21 @@
                         </div>
 
                         <div class="floating-buttons">
-                            <button class="fab" title="Cadastrar um Produto" hx-trigger="click"
-                                hx-get="/api/itens/new/add" hx-target="#itens" hx-swap="innerHTML">
-                                <i class="material-symbols-outlined">add</i>
-                            </button>
-                            <a class="fab" href="/app/lista.html" title="Preparar a lista de compras">
-                                <i class="material-symbols-outlined">shopping_cart</i>
-                            </a>
+                            <div>
+                                <button class="fab" title="Cadastrar um Produto" hx-trigger="click"
+                                    hx-get="/api/itens/new/add" hx-target="#itens" hx-swap="innerHTML">
+                                    <i class="material-symbols-outlined">add</i>
+                                </button>
+                                <legend>NOVO PRODUTO</legend>
+                            </div>
+
+                            <div>
+                                <a class="fab" href="/app/lista.html" title="Preparar a lista de compras">
+                                    <i class="material-symbols-outlined">list_alt_add</i>
+                                </a>
+                                <legend>PREPARAR LISTA</legend>
+                            </div>
                         </div>
-
-
                     </section>
                 </template>
 

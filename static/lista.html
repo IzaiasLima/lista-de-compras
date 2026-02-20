@@ -121,11 +121,28 @@
                 </template>
 
                 <div class="buttons spacer" hx-ext="client-side-templates">
-                    <a class="button" hx-target="previous #lista" hx-trigger="click" hx-confirm="todos os itens"
+                    <a class="button" hx-target="previous #lista" hx-trigger="click" hx-confirm="os itens selecionados"
                         mustache-array-template="template" hx-get="/api/lista/all/reset">
-                        Refazer a lista
+                        Nova lista
                     </a>
                     <a class="button" href="/app/compras.html">Fazer compras</a>
+                </div>
+
+                <div class="floating-buttons" hx-ext="client-side-templates">
+                    <div>
+                        <button class="fab" hx-target="previous #lista" hx-trigger="click"
+                            hx-confirm="os itens selecionados" mustache-array-template="template"
+                            hx-get="/api/lista/all/reset">
+                            <i class="material-symbols-outlined">playlist_remove</i>
+                        </button>
+                        <legend>NOVA LISTA</legend>
+                    </div>
+                    <div>
+                        <a class="fab" href="/app/compras.html" title="Fazer as compras">
+                            <i class="material-symbols-outlined">shopping_cart</i>
+                        </a>
+                        <legend>FAZER COMPRAS</legend>
+                    </div>
                 </div>
 
                 <div id="toast" class="animate__animated animate__faster">
