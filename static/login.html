@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
-    <title>Lista de Compras - Login</title>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
+        <title>Lista de Compras - Login</title>
+        <link rel="manifest" href="/app/js/manifest.json">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <link rel="stylesheet" href="./css/styles.css">
+    </head>
 
-<body>
-    <div class="container">
-        <div id="login">
-            <input type="text" name="user" placeholder="Usuário">
-            <input type="password" name="passwd" placeholder="Senha">
+    <body>
+        <div class="container">
+            <div id="login">
+                <input type="text" name="user" placeholder="Usuário">
+                <input type="password" name="passwd" placeholder="Senha">
 
-            <button hx-target="this" hx-post="/login" hx-include="#login" hx-indicator="#loader">
-                <img width="70px" id="loader" class="htmx-indicator" src="./icons/loader.svg">
-                <span>Entrar</span>
-            </button>
+                <button hx-target="this" hx-post="/login" hx-include="#login" hx-indicator="#loader">
+                    <img width="70px" id="loader" class="htmx-indicator" src="./icons/loader.svg">
+                    <span>Entrar</span>
+                </button>
 
-            <div class="buttons">
-                <button class="mini secondary" onclick="showToast('Envie e-mail para suporte@izaias.dev')">Esqueci a
-                    senha</button>
-                <button class="mini secondary" hx-target="this" hx-post="/newuser"
-                    hx-include="#login">Cadastrar</button>
+                <div class="buttons">
+                    <button class="mini secondary" onclick="showToast('Envie e-mail para suporte@izaias.dev')">Esqueci a
+                        senha</button>
+                    <button class="mini secondary" hx-target="this" hx-post="/newuser"
+                        hx-include="#login">Cadastrar</button>
+                </div>
+            </div>
+
+            <div id="toast" class="animate__animated animate__faster">
+                <!-- Exibir mensagem de erro -->
             </div>
         </div>
 
-        <div id="toast" class="animate__animated animate__faster">
-            <!-- Exibir mensagem de erro -->
-        </div>
-    </div>
+        <script src="https://unpkg.com/htmx.org@1.9.10"
+            integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+            crossorigin="anonymous"></script>
+        <script src="./js/functions.js"></script>
 
-    <script src="https://unpkg.com/htmx.org@1.9.10"
-        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-        crossorigin="anonymous"></script>
-    <script src="./js/functions.js"></script>
-
-</body>
+    </body>
 
 </html>
