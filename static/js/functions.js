@@ -6,6 +6,19 @@ if ('serviceWorker' in navigator) {
         .catch(err => console.log('Erro:', err));
 }
 
+document.addEventListener("htmx:afterSwap", (event) => {
+    // ocultar botoes flutuantes quando os botões fixos estiverem visíveis
+    const floatingButtons = document.querySelector('.floating-buttons');
+    const fixedButtons = document.querySelector('.buttons.spacer');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            floatingButtons.style.display = entry.isIntersecting ? 'none' : 'flex';
+        });
+    });
+    observer.observe(fixedButtons);
+});
+
 document.addEventListener(
     "htmx:confirm",
     function (evt) {
@@ -32,18 +45,6 @@ document.addEventListener('htmx:responseError', evt => {
     error = JSON.parse(evt.detail.xhr.responseText);
     showToast(error.detail);
 });
-
-// ocultar botoes flutuantes quando os botões fixos estiverem visíveis
-const floatingButtons = document.querySelector('.floating-buttons');
-const fixedButtons = document.querySelector('.buttons.spacer');
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        floatingButtons.style.display = entry.isIntersecting ? 'none' : 'flex';
-    });
-});
-
-observer.observe(fixedButtons);
 
 // exibir mensagem de erro quando ocorrer um erro na requisição
 function showToast(msg) {
