@@ -71,20 +71,27 @@ async def get_filtrado(tbl, user_email, filtro=None):
         return []
 
 
+COLUNAS_ITENS = ("nome", "categoria", "status")
+
+
 def add(table, user_email, dados: dict):
-    if dados:
-        values = [f"'{v}'" for _, v in dados.items()]
-        all_values = ",".join(values)
+    """Insere um registro usando apenas as colunas conhecidas da tabela.
 
-        sql = f"INSERT INTO {table}"
+    Os valores são passados como parâmetros da query, para que textos
+    com aspas (ex.: "Farinha d'água") não quebrem o SQL.
+    """
+    colunas = [c for c in COLUNAS_ITENS if c in dados]
+    if not colunas:
+        return
 
-        if DB_TYPE == TYPE_PSQL:
-            sql += f" VALUES (DEFAULT, {all_values}, '{user_email}')"
-        else:
-            sql += f" VALUES (NULL, {all_values}, '{user_email}')"
+    marcador = "%s" if DB_TYPE == TYPE_PSQL else "?"
+    valores = [dados[c] for c in colunas] + [user_email]
 
-        cur.execute(sql)
-        con.commit()
+    sql = f"INSERT INTO {table} ({', '.join(colunas)}, user_email)"
+    sql += f" VALUES ({', '.join([marcador] * len(valores))})"
+
+    cur.execute(sql, valores)
+    con.commit()
 
 
 def patch_status(id, user_email, status):

@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
 
 import json
+import os
 import urllib.parse as html
 import uvicorn
 import static.fragments.html_add as add
@@ -15,6 +16,9 @@ import auth
 
 ERR_MSG = "Todos os campos precisam ser preenchidos!"
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CAMPOS_ITEM = ("nome", "categoria", "status")
+
 
 app = FastAPI(
     title="Lista de Compras",
@@ -22,7 +26,11 @@ app = FastAPI(
     summary="Lista de compras simples para um usuário.",
 )
 
-app.mount("/app", StaticFiles(directory="static", html="True"), name="static")
+app.mount(
+    "/app",
+    StaticFiles(directory=os.path.join(BASE_DIR, "static"), html="True"),
+    name="static",
+)
 
 
 async def get_body(request: Request):
@@ -53,8 +61,8 @@ async def root():
 
 @app.post("/newuser", response_class=HTMLResponse)
 async def add_user(request: Request, body: dict = Depends(get_body)):
-    username: str = body.get("user").strip().lower()
-    password: str = body.get("passwd").strip().lower()
+    username: str = (body.get("user") or "").strip().lower()
+    password: str = (body.get("passwd") or "").strip().lower()
 
     if len(username.strip()) == 0 or len(password.strip()) == 0:
         raise HTTPException(status_code=400, detail="Usuário ou senha inválidos.")
@@ -74,8 +82,8 @@ async def add_user(request: Request, body: dict = Depends(get_body)):
 @auth.authenticated
 async def new_passwd(request: Request, body: dict = Depends(get_body)):
     username = session.get_user(request)
-    oldpwd = body.get("oldpwd").strip().lower()
-    newpwd = body.get("newpwd").strip().lower()
+    oldpwd = (body.get("oldpwd") or "").strip().lower()
+    newpwd = (body.get("newpwd") or "").strip().lower()
 
     allow = await user.is_valid_pwd(username, oldpwd)
 
@@ -94,8 +102,8 @@ async def new_passwd(request: Request, body: dict = Depends(get_body)):
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(body: dict = Depends(get_body)):
-    username = body.get("user").strip().lower()
-    password = body.get("passwd").strip().lower()
+    username = (body.get("user") or "").strip().lower()
+    password = (body.get("passwd") or "").strip().lower()
     return await continue_login(username, password)
 
 
@@ -154,9 +162,9 @@ async def get_itens_list(request: Request):
 @app.post("/api/itens", response_class=JSONResponse)
 @auth.authenticated
 async def add_iten(request: Request, body=Depends(get_body)):
-    if is_valid(body, 3):
+    if is_valid(body):
         email = session.get_user(request)
-        db.add_iten(body, email)
+        db.add_iten({campo: body[campo] for campo in CAMPOS_ITEM}, email)
         dados = await db.get_itens(email)
         return dados
     else:
@@ -173,7 +181,7 @@ async def get_shopping_list(request: Request):
 
 @app.get("/api/itens/{id}", response_class=JSONResponse)
 @auth.authenticated
-async def get_iten(id, request: Request):
+async def get_iten(id: int, request: Request):
     email = session.get_user(request)
     dados = await db.get_iten(id, email)
     return dados
@@ -181,7 +189,7 @@ async def get_iten(id, request: Request):
 
 @app.patch("/api/compras/{id}/adicionar", response_class=JSONResponse)
 @auth.authenticated
-async def iten_shopp_cart_add(request: Request, id):
+async def iten_shopp_cart_add(request: Request, id: int):
     email = session.get_user(request)
     db.patch_status(id, email, "comprado")
     dados = await db.get_compras(email)
@@ -190,7 +198,7 @@ async def iten_shopp_cart_add(request: Request, id):
 
 @app.patch("/api/compras/{id}/remover", response_class=JSONResponse)
 @auth.authenticated
-async def iten_shopp_cart_remove(request: Request, id):
+async def iten_shopp_cart_remove(request: Request, id: int):
     email = session.get_user(request)
     db.patch_status(id, email, "selecionado")
     dados = await db.get_compras(email)
@@ -214,7 +222,7 @@ async def shopping_list_reset(request: Request):
 
 @app.patch("/api/lista/{id}/adicionar", response_class=JSONResponse)
 @auth.authenticated
-async def iten_lista_add(request: Request, id):
+async def iten_lista_add(request: Request, id: int):
     email = session.get_user(request)
     db.patch_status(id, email, "selecionado")
     return await db.get_lista(email)
@@ -222,7 +230,7 @@ async def iten_lista_add(request: Request, id):
 
 @app.patch("/api/lista/{id}/remover", response_class=JSONResponse)
 @auth.authenticated
-async def iten_lista_remove(request: Request, id):
+async def iten_lista_remove(request: Request, id: int):
     email = session.get_user(request)
     db.patch_status(id, email, "cadastrado")
     return await db.get_lista(email)
@@ -230,7 +238,7 @@ async def iten_lista_remove(request: Request, id):
 
 @app.delete("/api/itens/{id}", response_class=HTMLResponse)
 @auth.authenticated
-async def del_iten(request: Request, id):
+async def del_iten(request: Request, id: int):
     db.del_iten(id)
     return ""
 
@@ -248,8 +256,12 @@ async def get_add_iten_template(request: Request):
 # --------------------------------------- #
 
 
-def is_valid(body: dict, qtd: int):
-    return sum([1 if v else 0 for _, v in body.items()]) == qtd
+def is_valid(body: dict):
+    """Confere se os campos obrigatórios do item foram preenchidos.
+
+    Campos extras no corpo são ignorados (antes geravam 422).
+    """
+    return all(str(body.get(campo) or "").strip() for campo in CAMPOS_ITEM)
 
 
 # --------------------------------------- #

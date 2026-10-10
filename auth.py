@@ -12,9 +12,12 @@ SECRET_KEY = os.environ.get("ADMIN_PWD", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
 
 def authenticated(func):
     @wraps(func)
-    async def wrap_func(request, *args, **kwargs):
+    async def wrap_func(*args, **kwargs):
+        # FastAPI injeta os argumentos por keyword; repassa tudo como keyword
+        # para não colidir com a assinatura do endpoint (ex.: id, request).
+        request = kwargs.get("request", args[0] if args else None)
         await valid(request)
-        return await func(request, *args, **kwargs)
+        return await func(*args, **kwargs)
 
     return wrap_func
 
