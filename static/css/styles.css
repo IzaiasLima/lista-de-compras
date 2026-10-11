@@ -11,6 +11,7 @@
     --bg-secondary: #eeeeee;
     --btn-primary: #680165;
     --btn-font-primary: #fff;
+    --primary: rgba(157, 82, 145, 0.1);
     --secondary: #8c558a;
     --legenda-font-color: #770666;
     --soft-color: #474747;
@@ -87,11 +88,7 @@ body {
 }
 
 .content {
-    padding: 0 15px;
-}
-
-.titles {
-    margin-top: 40px;
+    padding: 35px 15px;
 }
 
 .cards {
@@ -132,6 +129,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-content: center;
+    padding-top: 80px;
 }
 
 .secondary {
@@ -158,6 +156,11 @@ body {
     flex-direction: column;
     height: 100%;
     width: calc(250px + 10vw);
+}
+
+
+#lista {
+    padding-top: 80px;
 }
 
 #toast {
@@ -234,7 +237,8 @@ button.swal2-cancel {
 
 .titles {
     flex-direction: column;
-    padding: 40px 0;
+    /* margin-top: 40px; */
+    /* padding: 40px 0; */
 }
 
 .titles h1,
@@ -245,7 +249,8 @@ button.swal2-cancel {
 }
 
 .titles h1 {
-    font-size: 2.5cqw;
+    font-size: 2.3cqw;
+    /* font-size: 1.7cqw; */
 }
 
 .titles h2 {
@@ -537,14 +542,33 @@ tr.htmx-swapping td {
 
 tr.destacado td {
     background: rgba(104, 1, 101, 0.15) !important;
-    box-shadow: inset 0 0 0 2px var(--btn-primary);
+    border-width: 2px;
+    border-style: solid none;
+    border-color: var(--btn-primary);
+}
+
+#pesquisa {
+    display: none;
+    position: fixed;
+    top: 50px;
+    height: 65px;
+    width: 100%;
+    padding: 15px;
+    background-color: var(--bg-menu);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
 }
 
 #pesquisa-lista {
+    display: flex;
+    margin: auto;
     padding: 8px 12px;
     font-size: 1rem;
+    width: 100%;
+    border-style: none none solid;
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
+    box-shadow: none;
 }
 
 #pesquisa-lista:focus-visible {

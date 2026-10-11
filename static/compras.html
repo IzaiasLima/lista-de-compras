@@ -1,122 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Lista de Compras - Fazer Compras</title>
-        <link rel="manifest" href="/app/js/manifest.json">
-        <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
-        <link rel="stylesheet"
-            href="./fonts/material-symbols.css">
-        <link rel="stylesheet" href="./vendor/animate-4.1.1.min.css">
-        <link rel="stylesheet" href="./css/styles.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compras - Fazer Compras</title>
+    <link rel="manifest" href="/app/js/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon.png">
+    <link rel="stylesheet" href="./fonts/material-symbols.css">
+    <link rel="stylesheet" href="./vendor/animate-4.1.1.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
 
-    <body>
-        <div class="header">
-            <a href="/app/home.html">
-                <i class="material-symbols-outlined">arrow_back</i>
+<body>
+    <div class="header">
+        <a href="/app/home.html">
+            <i class="material-symbols-outlined">arrow_back</i>
+        </a>
+
+        <div class="titles">
+            <h1>Fazer as Compras</h1>
+        </div>
+
+        <div>
+            <a onclick="decFontSize()">
+                <i class="material-symbols-outlined"> text_decrease </i>
             </a>
-            <div>
-                <a onclick="decFontSize()">
-                    <i class="material-symbols-outlined"> text_decrease </i>
-                </a>
-                <a onclick="incFontSize()">
-                    <i class="material-symbols-outlined"> text_increase </i>
-                </a>
-            </div>
+            <a onclick="incFontSize()">
+                <i class="material-symbols-outlined"> text_increase </i>
+            </a>
         </div>
+    </div>
 
-        <div class="container">
-            <div class="titles">
+    <div class="container">
+        <!-- <div class="titles">
                 <h1>Fazer as Compras</h1>
+            </div> -->
+
+        <div class="content" hx-ext="client-side-templates">
+            <div id="lista" class="w-100" hx-get="/api/compras" hx-trigger="load" hx-swap="innerHTML"
+                mustache-array-template="template">
+                <!-- Os dados vão ser exibidos aqui. -->
+
+                <div class="spinner">
+                    <img src="./icons/spinner.svg">
+                </div>
             </div>
 
-            <div class="content" hx-ext="client-side-templates">
-                <div class="w-100" hx-get="/api/compras" hx-trigger="load" hx-swap="innerHTML"
-                    mustache-array-template="template">
-                    <!-- Os dados vão ser exibidos aqui. -->
+            <template id="template">
+                <section id="itens">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome do item</th>
+                                <th class="m-hidden">Categoria</th>
+                                <th class="m-hidden">Situação</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
 
-                    <div class="spinner">
-                        <img src="./icons/spinner.svg">
-                    </div>
-                </div>
+                        <tbody>
+                            <!-- {{#data}} -->
+                            <!-- {{#selecionados}} -->
+                            <tr>
+                                <td title="{{id}}" class="u-case">{{nome}}</td>
+                                <td data-th="Categoria" class="m-hidden fl-case">{{categoria}}</td>
+                                <td data-th="Situação" class="m-hidden fl-case">{{status}}</td>
+                                <td class="icon">
+                                    <div class="icon">
+                                        <a title="Colocar o item no carrinho" hx-target="closest table"
+                                            hx-swap="outerHTML" hx-patch="/api/compras/{{id}}/adicionar">
+                                            <span class="material-symbols-outlined small-icon">
+                                                add_shopping_cart
+                                            </span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- {{/selecionados}} -->
 
-                <template id="template">
-                    <section id="itens">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Nome do item</th>
-                                    <th class="m-hidden">Categoria</th>
-                                    <th class="m-hidden">Situação</th>
-                                    <th>&nbsp;</th>
-                                </tr>
-                            </thead>
+                            <!-- {{#comprados}} -->
+                            <tr>
+                                <td title="{{id}}" class="comprado u-case">{{nome}}</td>
+                                <td data-th="Categoria" class="comprado m-hidden fl-case">{{categoria}}</td>
+                                <td data-th="Situação" class="comprado m-hidden fl-case">{{status}}</td>
+                                <td>
+                                    <div class="icon">
+                                        <a title="Tirar o item do carrinho" hx-target="closest table"
+                                            hx-swap="outerHTML" hx-patch="/api/compras/{{id}}/remover">
+                                            <span class="material-symbols-outlined small-icon warning">
+                                                remove_shopping_cart
+                                            </span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- {{/comprados}} -->
 
-                            <tbody>
-                                <!-- {{#data}} -->
-                                <!-- {{#selecionados}} -->
-                                <tr>
-                                    <td title="{{id}}" class="u-case">{{nome}}</td>
-                                    <td data-th="Categoria" class="m-hidden fl-case">{{categoria}}</td>
-                                    <td data-th="Situação" class="m-hidden fl-case">{{status}}</td>
-                                    <td class="icon">
-                                        <div class="icon">
-                                            <a title="Colocar o item no carrinho" hx-target="closest table"
-                                                hx-swap="outerHTML" hx-patch="/api/compras/{{id}}/adicionar">
-                                                <span class="material-symbols-outlined small-icon">
-                                                    add_shopping_cart
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- {{/selecionados}} -->
+                            <!-- {{^selecionados}} -->
+                            <tr>
+                                <td class="warning" colspan="5">Não há itens pendentes na lista de compras.</td>
+                            </tr>
+                            <!-- {{/selecionados}} -->
+                            <!-- {{/data}} -->
 
-                                <!-- {{#comprados}} -->
-                                <tr>
-                                    <td title="{{id}}" class="comprado u-case">{{nome}}</td>
-                                    <td data-th="Categoria" class="comprado m-hidden fl-case">{{categoria}}</td>
-                                    <td data-th="Situação" class="comprado m-hidden fl-case">{{status}}</td>
-                                    <td>
-                                        <div class="icon">
-                                            <a title="Tirar o item do carrinho" hx-target="closest table"
-                                                hx-swap="outerHTML" hx-patch="/api/compras/{{id}}/remover">
-                                                <span class="material-symbols-outlined small-icon warning">
-                                                    remove_shopping_cart
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- {{/comprados}} -->
+                        </tbody>
+                    </table>
+                </section>
+            </template>
 
-                                <!-- {{^selecionados}} -->
-                                <tr>
-                                    <td class="warning" colspan="5">Não há itens pendentes na lista de compras.</td>
-                                </tr>
-                                <!-- {{/selecionados}} -->
-                                <!-- {{/data}} -->
-
-                            </tbody>
-                        </table>
-                    </section>
-                </template>
-
-                <div id="toast" class="animate__animated animate__faster">
-                    <!-- Exibir mensagem de erro -->
-                </div>
+            <div id="toast" class="animate__animated animate__faster">
+                <!-- Exibir mensagem de erro -->
             </div>
         </div>
+    </div>
 
-        <script src="./vendor/htmx-1.9.10.js"></script>
-        <script src="./vendor/htmx-client-side-templates.js"></script>
-        <script src="./vendor/mustache-4.2.0.js"></script>
-        <script src="./js/functions.js"></script>
-        <script src="./js/auth.js?v=2"></script>
+    <script src="./vendor/htmx-1.9.10.js"></script>
+    <script src="./vendor/htmx-client-side-templates.js"></script>
+    <script src="./vendor/mustache-4.2.0.js"></script>
+    <script src="./js/functions.js"></script>
+    <script src="./js/auth.js?v=2"></script>
 
-    </body>
+</body>
 
 </html>

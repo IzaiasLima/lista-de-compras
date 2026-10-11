@@ -154,7 +154,40 @@ function initPesquisaLista() {
 }
 
 // Inicializa pesquisa após swap do HTMX (quando a tabela é carregada/recarregada)
+function togglePesquisa() {
+    const div = document.getElementById('pesquisa');
+    if (!div) return;
+    const isHidden = div.style.display === 'none' || div.style.display === '';
+    div.style.display = isHidden ? 'block' : 'none';
+
+    document.querySelectorAll('#itens tbody tr.destacado').forEach(tr => tr.classList.remove('destacado'));
+
+    if (isHidden) {
+        const inp = document.getElementById('pesquisa-lista');
+        if (inp) {
+            inp.focus();
+            inp.select();
+        }
+    }
+}
+
+function initPesquisaToggle() {
+    const btn = document.getElementById('toggle-pesquisa');
+    if (!btn) return;
+    btn.addEventListener('click', togglePesquisa);
+    // btn.addEventListener('touchstart', function (e) {
+    //     e.preventDefault();
+    //     togglePesquisa();
+    // }, { passive: false });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initPesquisaToggle();
+    initPesquisaLista();
+});
+
 document.addEventListener('htmx:afterSwap', function (event) {
     // Reaplica observer dos botões flutuantes já existente
     initPesquisaLista();
+    initPesquisaToggle();
 });
