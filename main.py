@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
 
 import json
 import os
+import time
 import urllib.parse as html
 import uvicorn
 import static.fragments.html_add as add
@@ -62,10 +63,16 @@ async def root():
 @app.post("/newuser", response_class=HTMLResponse)
 async def add_user(request: Request, body: dict = Depends(get_body)):
     username: str = (body.get("user") or "").strip().lower()
-    password: str = (body.get("passwd") or "").strip().lower()
+    password: str = (body.get("passwd") or "").strip()
 
-    if len(username.strip()) == 0 or len(password.strip()) == 0:
+    if len(username.strip()) == 0 or len(password) == 0:
         raise HTTPException(status_code=400, detail="Usuário ou senha inválidos.")
+
+    if len(password) < user.MIN_TAM_PWD:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Senha muito curta: mínimo {user.MIN_TAM_PWD} caracteres.",
+        )
 
     if user.exists(username):
         raise HTTPException(status_code=400, detail="Usuário informado já existe.")
@@ -75,20 +82,23 @@ async def add_user(request: Request, body: dict = Depends(get_body)):
     # cadastrar lista inicial de produtos
     db_init.init_itens_table(username)
 
-    return await continue_login(username, password)
+    return await continue_login(username, password, request)
 
 
 @app.post("/newpwd", response_class=HTMLResponse)
 @auth.authenticated
 async def new_passwd(request: Request, body: dict = Depends(get_body)):
     username = session.get_user(request)
-    oldpwd = (body.get("oldpwd") or "").strip().lower()
-    newpwd = (body.get("newpwd") or "").strip().lower()
+    oldpwd = (body.get("oldpwd") or "").strip()
+    newpwd = (body.get("newpwd") or "").strip()
 
     allow = await user.is_valid_pwd(username, oldpwd)
 
-    if len(newpwd.strip()) == 0:
-        raise HTTPException(status_code=400, detail="Nova senha inválida.")
+    if len(newpwd) < user.MIN_TAM_PWD:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Nova senha inválida: mínimo {user.MIN_TAM_PWD} caracteres.",
+        )
 
     if not allow:
         raise HTTPException(status_code=401, detail="Senha anterior não confere.")
@@ -101,17 +111,47 @@ async def new_passwd(request: Request, body: dict = Depends(get_body)):
 
 
 @app.post("/login", response_class=HTMLResponse)
-async def login(body: dict = Depends(get_body)):
+async def login(request: Request, body: dict = Depends(get_body)):
     username = (body.get("user") or "").strip().lower()
-    password = (body.get("passwd") or "").strip().lower()
-    return await continue_login(username, password)
+    password = (body.get("passwd") or "").strip()
+    return await continue_login(username, password, request)
 
 
-async def continue_login(username, password):
+# controle simples de tentativa de login (em memória: vale por processo)
+TENTATIVAS_MAX = 5
+BLOQUEIO_SEG = 300          # 5 tentativas erradas bloqueiam o e-mail por 5 minutos
+_tentativas = {}            # email -> [falhas, desbloqueia_em]
+
+
+def bloqueado(email):
+    dados = _tentativas.get(email)
+    return bool(dados and dados[1] > time.time())
+
+
+def registra_falha(email):
+    falhas = _tentativas.get(email, [0, 0])[0] + 1
+    desbloqueio = time.time() + BLOQUEIO_SEG if falhas >= TENTATIVAS_MAX else 0
+    _tentativas[email] = [falhas, desbloqueio]
+
+
+def limpa_tentativas(email):
+    _tentativas.pop(email, None)
+
+
+async def continue_login(username, password, request):
+    if bloqueado(username):
+        raise HTTPException(
+            status_code=429,
+            detail="Muitas tentativas de acesso. Tente novamente em alguns minutos.",
+        )
+
     allow = await user.is_valid_pwd(username, password)
 
     if not allow:
+        registra_falha(username)
         raise HTTPException(status_code=401, detail="Usuário/senha não confere.")
+
+    limpa_tentativas(username)
 
     session_id = session.get_random_id()
     await user.set_session(session_id, username)
@@ -119,7 +159,13 @@ async def continue_login(username, password):
     URL = "<script>window.location.href='/app/home.html'</script>"
 
     response = HTMLResponse(URL)
-    response.set_cookie(key="Authorization", value=session_id)
+    response.set_cookie(
+        key="Authorization",
+        value=session_id,
+        httponly=True,                     # JS não lê: mitiga roubo de sessão via XSS
+        samesite="lax",                    # não segue em requisições de outros sites
+        secure=request.url.scheme == "https",
+    )
 
     return response
 
@@ -136,15 +182,21 @@ async def session_logout(req: Request):
     return response
 
 
-@app.post("/renewpwd/{username}/{newpwd}")
+@app.post("/renewpwd/{username}")
 @auth.administrator
-async def renew_passwd(username, newpwd, request: Request):
+async def renew_passwd(username: str, request: Request, body: dict = Depends(get_body)):
+    # a senha vai no corpo da requisição, nunca na URL (URLs param no log)
+    username = username.strip().lower()
+    newpwd = (body.get("newpwd") or "").strip()
 
     if user.exists(username) == False:
         raise HTTPException(status_code=400, detail="Usuário informado não existe.")
 
-    if len(newpwd.strip()) == 0:
-        raise HTTPException(status_code=400, detail="Nova senha inválida.")
+    if len(newpwd) < user.MIN_TAM_PWD:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Nova senha inválida: mínimo {user.MIN_TAM_PWD} caracteres.",
+        )
 
     await user.update_pwd(username, newpwd)
 
@@ -157,6 +209,15 @@ async def get_itens_list(request: Request):
     user_email = session.get_user(request)
     dados = await db.get_itens(user_email)
     return dados
+
+
+@app.get("/api/session", response_class=JSONResponse)
+@auth.authenticated
+async def get_session(request: Request):
+    """Consulta usada pelo front (o cookie é HttpOnly, o JS não consegue ler)."""
+    return JSONResponse(
+        {"user": session.get_user(request)}, headers={"Cache-Control": "no-store"}
+    )
 
 
 @app.post("/api/itens", response_class=JSONResponse)
@@ -239,7 +300,8 @@ async def iten_lista_remove(request: Request, id: int):
 @app.delete("/api/itens/{id}", response_class=HTMLResponse)
 @auth.authenticated
 async def del_iten(request: Request, id: int):
-    db.del_iten(id)
+    # o filtro por usuário está na camada de dados: id de terceiros não é apagado
+    db.del_iten(id, session.get_user(request))
     return ""
 
 

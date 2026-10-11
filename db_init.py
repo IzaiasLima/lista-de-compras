@@ -2,11 +2,14 @@ import os
 import uuid
 
 from db import *
+from db_user import hash_pwd
 from itens import ler_csv
 
 DB_TYPE = os.environ.get("DB_TYPE", TYPE_PSQL)
 ADMIN_USR = os.environ.get("ADMIN_USR", "admin@admin.com")
-ADMIN_PWD = os.environ.get("ADMIN_PWD", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
+# sem senha padrão no código: se não houver ADMIN_PWD no ambiente,
+# o usuário inicial simplesmente não é criado
+ADMIN_PWD = os.environ.get("ADMIN_PWD")
 
 print(f"Script {__name__} executado.")
 
@@ -72,16 +75,20 @@ def init_user_table():
     con = DB().con
     cur = DB().cur
 
-    users = [
-        (f"{ADMIN_USR}", f"{ADMIN_PWD}"),
-    ]
-
     cur.execute("DELETE FROM users")
 
+    if not ADMIN_PWD:
+        print("ADMIN_PWD não definido: usuário inicial não criado.")
+        con.commit()
+        return
+
     if DB_TYPE == TYPE_PSQL:
-        cur.executemany("INSERT INTO users VALUES (DEFAULT, %s,%s,DEFAULT)", users)
+        sql = f"INSERT INTO users VALUES (DEFAULT, {placeholders(2)}, DEFAULT)"
     else:
-        cur.executemany("INSERT INTO users VALUES (NULL,?,?,NULL)", users)
+        sql = f"INSERT INTO users VALUES (NULL, {placeholders(2)}, NULL)"
+
+    # a senha vai guardada com sal + PBKDF2, como as demais
+    cur.execute(sql, (ADMIN_USR, hash_pwd(ADMIN_PWD)))
 
     con.commit()
 
@@ -96,15 +103,15 @@ def init_itens_table(user_email):
 
     itens_iniciais = ler_csv("itens.csv", user_email)
 
-    cur.execute(f"DELETE FROM itens WHERE user_email='{user_email}'")
+    cur.execute(f"DELETE FROM itens WHERE user_email={placeholders(1)}", (user_email,))
 
     if DB_TYPE == TYPE_PSQL:
         cur.executemany(
-            "INSERT INTO itens VALUES (DEFAULT,%s,%s,%s,%s)", itens_iniciais
+            f"INSERT INTO itens VALUES (DEFAULT,{placeholders(4)})", itens_iniciais
         )
 
     else:
-        cur.executemany("INSERT INTO itens VALUES (NULL,?,?,?,?)", itens_iniciais)
+        cur.executemany(f"INSERT INTO itens VALUES (NULL,{placeholders(4)})", itens_iniciais)
 
     con.commit()
 

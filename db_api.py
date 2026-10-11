@@ -17,8 +17,8 @@ def add_iten(new_iten, user_email):
     add("itens", user_email, new_iten)
 
 
-def del_iten(id):
-    delete("itens", id)
+def del_iten(id, user_email):
+    delete("itens", id, user_email)
 
 
 async def get_lista(user_email):
@@ -40,33 +40,41 @@ async def get_compras(user_email):
 
 
 async def get_dados(tbl, user_email, id=None):
-    sql = f"SELECT * FROM {tbl}"
-    sql += f" WHERE user_email='{user_email}'"
-    sql += f" AND id={id}" if id else ""
+    sql = f"SELECT * FROM {tbl} WHERE user_email={placeholders(1)}"
+    valores = [user_email]
+
+    if id is not None:
+        sql += f" AND id={placeholders(1)}"
+        valores.append(id)
+
     sql += " ORDER BY 3,2;"
 
     try:
-        cur.execute(sql)
+        cur.execute(sql, valores)
         rows = cur.fetchall()
         dados = [dict(row) for row in rows]
         return dados
-    except:
+    except Exception:
         cur.close()
         return []
 
 
 async def get_filtrado(tbl, user_email, filtro=None):
-    sql = f"SELECT * FROM {tbl}"
-    sql += f" WHERE user_email='{user_email}'"
-    sql += f" AND status='{filtro}'" if filtro else ""
+    sql = f"SELECT * FROM {tbl} WHERE user_email={placeholders(1)}"
+    valores = [user_email]
+
+    if filtro:
+        sql += f" AND status={placeholders(1)}"
+        valores.append(filtro)
+
     sql += " ORDER BY 3,2;"
 
     try:
-        cur.execute(sql)
+        cur.execute(sql, valores)
         rows = cur.fetchall()
         dados = [dict(row) for row in rows]
         return dados
-    except:
+    except Exception:
         cur.close()
         return []
 
@@ -95,14 +103,19 @@ def add(table, user_email, dados: dict):
 
 
 def patch_status(id, user_email, status):
-    sql = f"UPDATE itens SET status='{status}'"
-    sql += f" WHERE user_email='{user_email}'"
-    sql += f" AND id={id}" if id else ""
-    cur.execute(sql)
+    sql = f"UPDATE itens SET status={placeholders(1)} WHERE user_email={placeholders(1)}"
+    valores = [status, user_email]
+
+    if id is not None:
+        sql += f" AND id={placeholders(1)}"
+        valores.append(id)
+
+    cur.execute(sql, valores)
     con.commit()
 
 
-def delete(tbl, id):
-    sql = f"DELETE FROM {tbl} WHERE id={id}"
-    cur.execute(sql)
+def delete(tbl, id, user_email):
+    """Exclui apenas itens do próprio usuário — id de terceiros é ignorado."""
+    sql = f"DELETE FROM {tbl} WHERE id={placeholders(1)} AND user_email={placeholders(1)}"
+    cur.execute(sql, (id, user_email))
     con.commit()

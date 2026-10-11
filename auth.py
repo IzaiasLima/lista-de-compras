@@ -7,7 +7,6 @@ from session import valid, get_user
 
 ROLES = {"admin": []}
 ADMIN_EMAIL = os.environ.get("ADMIN_USR", "admin@admin.com")
-SECRET_KEY = os.environ.get("ADMIN_PWD", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
 
 
 def authenticated(func):

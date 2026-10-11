@@ -1,4 +1,5 @@
 import os
+import re
 import sqlite3
 import psycopg2 as psql
 from psycopg2.extras import DictCursor
@@ -16,6 +17,16 @@ LOCAL_DB_URL = "postgres://postgres:postgres@127.0.0.1/postgres"
 
 DB_TYPE = os.environ.get("DB_TYPE", TYPE_PSQL)
 DATABASE_URL = os.environ.get("DATABASE_URL", LOCAL_DB_URL)
+
+
+def placeholders(n: int) -> str:
+    """Marcadores de parâmetros do driver ativo: %s (PostgreSQL) ou ? (SQLite).
+
+    Valores vindos do usuário entram sempre por aqui e viajam separados em
+    `cur.execute(sql, valores)`; a query nunca é montada com f-string,
+    é isso que impede injeção de SQL.
+    """
+    return ", ".join(["%s" if DB_TYPE == TYPE_PSQL else "?"] * n)
 
 
 ## Borg singleton pattern connection class
@@ -41,7 +52,9 @@ class DB(object):
             else:
                 raise NotImplementedError("Tipo de conexão não implementada.")
 
-            print(f"Sistema conectado à base de dados: {DATABASE_URL}.")
+            # nunca imprimir o URL completo: ele pode conter usuário e senha
+            url_segura = re.sub(r"://[^@/]+@", "://***@", DATABASE_URL)
+            print(f"Sistema conectado à base de dados: {url_segura} ({DB_TYPE}).")
 
 
 if __name__ == "__main__":
