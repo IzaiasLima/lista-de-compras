@@ -535,6 +535,22 @@ tr.htmx-swapping td {
     transition: opacity 0.2s ease-out;
 }
 
+tr.destacado td {
+    background: rgba(104, 1, 101, 0.15) !important;
+    box-shadow: inset 0 0 0 2px var(--btn-primary);
+}
+
+#pesquisa-lista {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+#pesquisa-lista:focus-visible {
+    outline: #afafaa solid 2px;
+}
+
 @media (max-width: 992px) {
 
     select,

@@ -35,6 +35,10 @@
             </div>
 
             <div class="content" hx-ext="client-side-templates">
+                <div class="w-100" style="margin-bottom: 12px;">
+                    <input id="pesquisa-lista" type="search" placeholder="Pesquisar itens (mín. 3 caracteres)" autocomplete="off"
+                        style="width: 100%; max-width: 500px;">
+                </div>
                 <div id="lista" class="w-100" hx-get="/api/lista" hx-trigger="load" hx-swap="innerHTML"
                     mustache-array-template="template">
                     <!-- Os dados vão ser exibidos aqui. -->

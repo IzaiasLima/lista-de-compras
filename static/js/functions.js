@@ -104,6 +104,57 @@ function showSpinner() {
 
 function hideSpinner() {
     const spinner = document.querySelector('.spinner');
-    spinner.classList.remove('show');
-    spinner.classList.add('hide');
+    if (spinner) {
+        spinner.classList.remove('show');
+        spinner.classList.add('hide');
+    }
 }
+
+// Pesquisa local na tabela de "Preparar Lista de Compras"
+function initPesquisaLista() {
+    const input = document.getElementById('pesquisa-lista');
+    if (!input) return;
+
+    let lastSearch = '';
+    let firstIndex = -1;
+
+    input.addEventListener('input', function () {
+        const termo = this.value.trim().toLowerCase();
+        if (termo.length < 3) {
+            // Limpa destaque se voltar abaixo de 3 caracteres
+            document.querySelectorAll('#itens tbody tr.destacado').forEach(tr => tr.classList.remove('destacado'));
+            lastSearch = '';
+            firstIndex = -1;
+            return;
+        }
+
+        const linhas = document.querySelectorAll('#itens tbody tr');
+        const normalizadas = Array.from(linhas).map(tr => ({ tr, texto: tr.textContent.toLowerCase() }));
+        const matches = normalizadas.filter(item => item.texto.includes(termo));
+        if (matches.length === 0) {
+            // Mantém comportamento simples: não faz scroll se não encontrar
+            lastSearch = termo;
+            firstIndex = -1;
+            return;
+        }
+
+        // Encontra primeiro índice não destacado ainda? Ou sempre rola para o primeiro match
+        // Para rolar para a primeira linha correspondente, usamos o índice original
+        // Remove destaques anteriores
+        document.querySelectorAll('#itens tbody tr.destacado').forEach(tr => tr.classList.remove('destacado'));
+
+        // Rola para a primeira correspondência encontrada
+        const primeiro = matches[0].tr;
+        primeiro.classList.add('destacado');
+        primeiro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        lastSearch = termo;
+        firstIndex = normalizadas.findIndex(item => item.tr === primeiro);
+    });
+}
+
+// Inicializa pesquisa após swap do HTMX (quando a tabela é carregada/recarregada)
+document.addEventListener('htmx:afterSwap', function (event) {
+    // Reaplica observer dos botões flutuantes já existente
+    initPesquisaLista();
+});
